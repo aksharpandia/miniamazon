@@ -1,0 +1,24 @@
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Avenir" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="item-table-title">This is the table of test items.</div>
+    <table>
+        <thead>
+            <th>Item ID</th>
+            <th>If It's Sold</th>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td> {{item.itemID}}</td>
+                <td> {{item.isSold}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

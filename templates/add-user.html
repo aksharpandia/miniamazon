@@ -1,0 +1,32 @@
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        {% from "_formhelpers.html" import render_field %}
+
+        <form method="POST">
+            <dl>
+                {{ render_field(form.id) }}
+                {{ render_field(form.name) }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                {{ render_field(form.type) }}
+                {{ render_field(form.dateJoined) }}
+                {{ render_field(form.balance) }}
+                {{ render_field(form.shippingAddress )}}
+                {{ render_field(form.billingAddress )}}
+                {{ render_field(form.photo )}}
+            </dl>
+            <p><input type="submit" value="Submit">
+        </p></form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Changed your mind? <a class="ml-2" href="{{ url_for('user') }}">Go Back to Users</a>
+        </small>
+    </div>
+{% endblock content %}

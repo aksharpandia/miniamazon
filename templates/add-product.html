@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        {% from "_formhelpers.html" import render_field %}
+
+        <form method="POST">
+            <dl>
+                {{ render_field(form.productName) }}
+                {{ render_field(form.modelNum) }}
+                {{ render_field(form.userID) }}
+                {{ render_field(form.productDescription )}}
+                {{ render_field(form.productImage )}}
+                {{ render_field(form.stock )}}
+                {{ render_field(form.isRecommended )}}
+                {{ render_field(form.price) }}
+            </dl>
+            <p><input type="submit" value="Submit">
+        </p>
+        </form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Didn't mean to modify your listings? <a class="ml-2" href="{{ url_for('product') }}">Go Back to Products</a>
+        </small>
+    </div>
+{% endblock content %}

@@ -1,0 +1,23 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="category-table-title">This is the table of test categories.</div>
+    <table>
+        <thead>
+            <th>Category</th>
+            <th>Number of Items</th>
+        </thead>
+
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td> {{category.category}}</td>
+                <td> {{category.numberOfItems}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

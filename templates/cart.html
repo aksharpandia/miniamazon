@@ -1,0 +1,32 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="user-table-title">This is the table of test carts.</div>
+    <table>
+        <thead>
+            <th>Cart ID</th>
+            <th>Buyer ID</th>
+            <th>Modified Date</th>
+            <th>Submit Order</th>
+        </thead>
+
+        <tbody>
+            {% for cart in carts %}
+            <tr>
+                <td> 
+                    <a href="/cart/{{cart.cartID}}">
+                        {{cart.cartID}}
+                    </a>
+                </td>
+                <td>{{cart.buyerID}}</td>
+                <td> {{cart.modDateTime}}</td>
+                <td> <a href="{{ url_for('addOrder') }}"> Submit order </a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br><br>
+{% endblock content %}

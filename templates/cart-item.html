@@ -1,0 +1,22 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="user-table-title">These are the items in {{curr_buyer.name}}'s cart (cartID: {{curr_cart.cartID}}).</div>
+    <table>
+        <thead>
+            <th>Item ID</th>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{item.itemID}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br><br>
+{% endblock content %}

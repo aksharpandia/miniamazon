@@ -1,0 +1,23 @@
+* {
+    font-family: "Avenir", sans-serif;
+}
+
+.reviews-table-title {
+    font-size: 30px;
+    padding-bottom: 20px;
+    font-weight: 600;
+}
+
+table, td, th {  
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 15px;
+}

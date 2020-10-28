@@ -1,0 +1,36 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="product-table-title">This is the table of test products.</div>
+    <table>
+        <thead>
+            <th>Model Number</th>
+            <th>User ID</th>
+            <th>Description</th>
+            <th>Image (Path)</th>
+            <th>Name</th>
+            <th>Stock Left</th>
+            <th>If It's Recommended</th>
+            <th>Price</th>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td> {{product.modelNum}}</td>
+                <td> {{product.userID}}</td>
+                <td> {{product.productDescription}}</td>
+                <td> {{product.productImage}}</td>
+                <td> {{product.productName}}</td>
+                <td> {{product.stockLeft}}</td>
+                <td> {{product.isRecommended}}</td>
+                <td> {{product.price}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br><br>
+    <a href="{{ url_for('addProduct', seller_id=-1) }}"> Add a product </a>
+{% endblock content %}

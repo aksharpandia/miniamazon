@@ -1,0 +1,37 @@
+
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="user-table-title">This is the table of test buyers.</div>
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Date Joined</th>
+            <th>Balance</th>
+            <th>Shipping Address</th>
+            <th>Billing Address</th>
+            <th>Photo</th>
+        </thead>
+
+        <tbody>
+            {% for buyer in buyers %}
+            <tr>
+                <td> {{buyer.name}}</td>
+                <td> {{buyer.email}}</td>
+                <td> {{buyer.password}}</td>
+                <td> {{buyer.dateJoined}}</td>
+                <td> {{buyer.balance}}</td>
+                <td> {{buyer.shippingAddress}}</td>
+                <td> {{buyer.billingAddress}}</td>
+                <td> {{buyer.photo}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

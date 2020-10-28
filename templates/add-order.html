@@ -1,0 +1,27 @@
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        {% from "_formhelpers.html" import render_field %}
+
+        <form method="POST">
+            <dl>
+                {{ render_field(form.orderID) }}
+                {{ render_field(form.buyerID) }} 
+                {{ render_field(form.transacAmount) }}
+                {{ render_field(form.deliveryOption) }}
+                {{ render_field(form.createdDateTime) }}
+            </dl>
+            <p><input type="submit" value="Submit">
+        </p></form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Didn't mean to submit an order? <a class="ml-2" href="{{ url_for('cart') }}">Go Back to Carts</a>
+        </small>
+    </div>
+{% endblock content %}
