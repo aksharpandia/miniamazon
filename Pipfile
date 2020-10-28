@@ -12,6 +12,7 @@ psycopg2-binary = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 flask-wtf = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
