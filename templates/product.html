@@ -23,7 +23,11 @@
                 <td> {{product.userID}}</td>
                 <td> {{product.productDescription}}</td>
                 <td> {{product.productImage}}</td>
-                <td> {{product.productName}}</td>
+                <td> 
+                    <a href="/product/{{product.modelNum}}">
+                        {{product.productName}}
+                    </a>
+                </td>
                 <td> {{product.stockLeft}}</td>
                 <td> {{product.isRecommended}}</td>
                 <td> {{product.price}} </td>

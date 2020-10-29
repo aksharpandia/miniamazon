@@ -103,6 +103,14 @@ def buyer():
 def product():
     return render_template('product.html', products=Product.query.all())
 
+@app.route('/product/<model_num>')
+def product_id(model_num):
+    return render_template('specific-product.html', 
+        curr_product=Product.query.filter(Product.modelNum == model_num).one(),
+        products=Product.query.filter(Product.modelNum == model_num),
+        curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
+        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num))
+
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
 def addProduct(seller_id):
     form = AddProductForm()

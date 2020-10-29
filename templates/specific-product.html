@@ -1,0 +1,26 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/specific-product.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="product-info-header">
+        <div class="product-title">{{curr_product.productName}}</div>
+        <div class="product-description">{{curr_product.productDescription}}</div>
+        <div class="product-category">{{curr_category.categoryName}}</div>
+    </div>
+
+    <!-- Recommended products row -->
+    {% for product in products %}
+    <div class="product-info">
+        <p class="product-img"><img src="http://placekitten.com/g/200/200" height="25%" width="auto" border="1px"></p>
+        <div class="product-info-text">
+            <div class="seller-product-name">{{product.productName}}</div>
+            <!-- avg. rating??? -->
+            <div class="seller-product-desc">{{product.productDescription}}</div>
+            <div class="seller-product-price">${{product.price}}</div>
+            <div class="seller-product-quantity">Qty Left: {{product.stockLeft}}</div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock content %}
