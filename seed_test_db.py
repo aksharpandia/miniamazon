@@ -63,6 +63,8 @@ product9 = Product(135357580, 2, '10.9-inch iPad Air (4th generation)', 'img9.jp
 db.session.add(product9)
 product10 = Product(135357581, 2, '10.2-inch iPad (8th generation)', 'img10.jpg', 'iPad 8th Generation', 1, False, 700.00)
 db.session.add(product10)
+# product11 = Product(135357581, 0, '10.2-inch iPad (8th generation)', 'img10.jpg', 'iPad 8th Generation', 1, False, 800.00)
+# db.session.add(product11)
 
 db.session.commit()
 

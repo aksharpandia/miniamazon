@@ -10,17 +10,40 @@
         <div class="product-category">{{curr_category.categoryName}}</div>
     </div>
 
-    <!-- Recommended products row -->
     {% for product in products %}
     <div class="product-info">
         <p class="product-img"><img src="http://placekitten.com/g/200/200" height="25%" width="auto" border="1px"></p>
-        <div class="product-info-text">
+        <div>
             <div class="seller-product-name">{{product.productName}}</div>
             <div class="seller-product-avg-rating">Average Rating: {{avg_rating}}
             <div class="seller-product-desc">{{product.productDescription}}</div>
-            <div class="seller-product-price">${{product.price}}</div>
+            <!-- <div class="seller-product-price">${{product.price}}</div> -->
             <div class="seller-product-quantity">Qty Left: {{product.stockLeft}}</div>
         </div>
+    </div>
+    <br><br><br><br>
+
+    <div>
+        <!-- still need to make it for multiple sellers, and make "add to cart" button functional -->
+        <div class="product-description">List of sellers selling this product:</div>
+        <table>
+            <thead>
+                <th>Name - </th>
+                <th>Stock Left - </th>
+                <th>Price</th>
+            </thead>
+    
+            <tbody>
+                {% for seller in all_sellers %}
+                <tr>
+                    <td> {{seller.name}} </td>
+                    <td> {{seller.stockLeft}}</td>
+                    <td class="seller-product-price"> $ {{seller.price}}</td>
+                    <td> <a href="">Add to Cart</a> </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endfor %}
 {% endblock content %}
