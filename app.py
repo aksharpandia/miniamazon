@@ -115,7 +115,7 @@ def product_id(model_num):
         # avg_rating=db.session.query(Reviews.rating).from_statement(text('SELECT COUNT(*) FROM Reviews WHERE Reviews.modelNum=:model_num_param')).params(model_num_param=model_num).all(),
         ratings=Reviews.query.filter(Reviews.modelNum == model_num),
         # curr_ratings=Reviews.query.filter(Reviews.modelNum == model_num).one(),
-        avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one())
+        avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0')
         )
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
