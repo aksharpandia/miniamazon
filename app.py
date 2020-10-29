@@ -7,6 +7,7 @@ from forms import AddUserForm
 from forms import AddCartForm
 from forms import AddOrderForm
 from random import randint
+from sqlalchemy.sql import text, func
 import os
 from dotenv import load_dotenv
 
@@ -109,9 +110,13 @@ def product_id(model_num):
         curr_product=Product.query.filter(Product.modelNum == model_num).one(),
         products=Product.query.filter(Product.modelNum == model_num),
         curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
-        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num,
-        curr_ratings=Review.query.filter(Reviews.modelNum == model_num).one(),
-        avg_rating=Reviews.query.filter(Review.modelNum == model_num).with_entities(func.avg(Reviews.rating))))
+        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
+        # avg_rating=db.session.execute('select AVG(rating) from Reviews where Reviews.modelNum=model_num'),
+        # avg_rating=db.session.query(Reviews.rating).from_statement(text('SELECT COUNT(*) FROM Reviews WHERE Reviews.modelNum=:model_num_param')).params(model_num_param=model_num).all(),
+        ratings=Reviews.query.filter(Reviews.modelNum == model_num),
+        # curr_ratings=Reviews.query.filter(Reviews.modelNum == model_num).one(),
+        avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one())
+        )
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
 def addProduct(seller_id):
