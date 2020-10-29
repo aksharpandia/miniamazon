@@ -1,14 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
-from forms import AddUserForm
-from forms import AddReviewsForm
-from forms import AddProductForm
-from forms import AddUserForm
-from forms import AddCartForm
-from forms import AddOrderForm
 from random import randint
 import os
 from dotenv import load_dotenv
+from flask_bcrypt import Bcrypt
+from datetime import datetime
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
 # loading the env
 load_dotenv('.env')
@@ -17,77 +14,41 @@ app = Flask(__name__)
 
 # configuring the database 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-print(os.getenv('DATABASE_URL'))
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 db = SQLAlchemy(app)
 
-# importing the models
+# for login purposes
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+# importing the models and forms
+from forms import *
 from models import *
 
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.query.get(int(user_id))
+    return user
+
 @app.route('/')
-def index():
+@login_required
+def main():
     return render_template('index.html')
 
-@app.route('/user')
-def user():
-    return render_template('user.html', users=User.query.all())
-
-    # NOTE: you can also do the same thing in regular SQL if u want!
-    # return render_template('user.html', users=db.session.execute('Select * from user')) 
-
-@app.route('/add-user', methods=['GET', 'POST'])
-def addUser():
-    form = AddUserForm()
-    if request.method=='POST': # need to validate form
-        user = User(form.id.data, form.name.data, form.email.data, form.password.data,
-                        form.type.data, form.dateJoined.data, form.balance.data, form.shippingAddress.data, 
-                        form.billingAddress.data, form.photo.data)
-        save_user_add(user, form, new=True)
-        create_user_cart(form, new=True)
-        flash(f'You successfully created a {form.type.data} account!', 'success')
-        return redirect(url_for('user')) # redirect to product page so they can see the updated table
-    return render_template('add-user.html', title='Create an account', form=form)
-
-def save_user_add(user, form, new=False):
-    """
-    Save adding the user to the database
-    """
-    # Get data from form and assign it to the correct attributes of the SQLAlchemy table object
-
-    # data from the user input
-    user.id = form.id.data
-    user.name = form.name.data
-    user.email = form.email.data
-    user.password = form.password.data
-    user.type = form.type.data
-    user.dateJoined = form.dateJoined.data
-    user.balance = form.balance.data
-    user.shippingAddress = form.shippingAddress.data
-    user.billingAddress = form.billingAddress.data
-    user.photo = form.photo.data
-
-    if new:
-        db.session.add(user)
-    db.session.commit()
-
-def create_user_cart(form, new=False):
-    if form.type.data != "buyer":
+def create_user_cart(userID, type, new=False):
+    if type != "buyer":
         return
     rand_cartID = randint(0,999999) # Need to adjust later
     temp_modDateTime = "2020-10-17"
-    cart = Cart(rand_cartID, form.id.data, temp_modDateTime)
+    cart = Cart(rand_cartID, userID, temp_modDateTime)
     cart.cartID = rand_cartID
-    cart.buyerID = form.id.data
+    cart.buyerID = userID
     cart.modDateTime = temp_modDateTime
     if new:
         db.session.add(cart)
     db.session.commit()
-
-
-@app.route('/seller')
-def seller():
-    return render_template('seller.html', sellers=User.query.filter(User.type == 'seller'))
 
 @app.route('/seller/<seller_id>')
 def seller_id(seller_id):
@@ -97,7 +58,7 @@ def seller_id(seller_id):
 
 @app.route('/buyer')
 def buyer():
-    return render_template('buyer.html', buyers=User.query.filter(User.type == 'buyer'))
+    return render_template('buyer.html', buyers=Buyer.query.all())
 
 @app.route('/product')
 def product():
@@ -107,15 +68,12 @@ def product():
 def addProduct(seller_id):
     form = AddProductForm()
     if request.method=='POST': # need to validate form
-        product = Product(form.productName.data, form.modelNum.data, form.userID.data,
+        product = Product(form.productName.data, form.modelNum.data, current_user.id,
                         form.productDescription.data, form.productImage.data, form.stock.data, form.isRecommended.data,
                         form.price.data)
         save_product_add(product, form, new=True)
         flash(f'You added {form.stock.data} {form.productName.data} product(s)!', 'success')
-        if int(seller_id) >= 0:
-            return redirect('/seller/' + str(seller_id))
-        else:
-            return redirect(url_for('product')) # redirect to product page so they can see the updated table
+        return redirect('/seller/' + str(seller_id))
     return render_template('add-product.html', title='Add to Your Product Listings', form=form)
 
 def save_product_add(product, form, new=False):
@@ -127,7 +85,7 @@ def save_product_add(product, form, new=False):
     # data from the user input
     product.productName = form.productName.data
     product.modelNum = form.modelNum.data
-    product.userID = form.userID.data # this needs to match the id of a seller due to foreign key constraint
+    product.userID = current_user.id # this needs to match the id of a seller due to foreign key constraint
     product.productDescription = form.productDescription.data
     product.productImage = form.productImage.data
     product.stockLeft += form.stock.data
@@ -188,7 +146,6 @@ def updateProduct(seller_id, product_id):
 def fillOutProductFields(product, form):
     form.productName.data = product.productName 
     form.modelNum.data = product.modelNum
-    form.userID.data = product.userID
     form.productDescription.data = product.productDescription 
     form.productImage.data = product.productImage
     form.stock.data = product.stockLeft
@@ -249,6 +206,56 @@ def save_reviews_add(reviews, form, new=False):
     if new:
         db.session.add(reviews)
     db.session.commit()
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LogInForm()
+    if request.method == 'POST':
+        user = User.query.filter_by(email = form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            return redirect(url_for('main'))
+        else: 
+            flash('Login unsuccessful. Check your email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+@app.route('/choose-registration')
+def chooseRegistration():
+    return render_template('choose-user-type.html')
+
+@app.route('/register/<type>', methods=['GET', 'POST'])
+def register(type):
+    form = AddBuyerForm()
+    if type == 'seller':
+        form = AddSellerForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(name=form.name.data, email=form.email.data, password=hashed_password,
+            type=type, dateJoined=datetime.date(datetime.now()))
+        db.session.add(user)
+        db.session.commit()
+
+        if type == 'buyer':
+            buyer = Buyer(buyerID=user.get_id(), balance=form.balance.data, 
+                shippingAddress=form.shippingAddress.data, billingAddress=form.billingAddress.data,
+                photo=form.photo.data, name=form.name.data, email=form.email.data)
+            db.session.add(buyer)
+            db.session.commit()
+        else:
+            seller = Seller(sellerID=user.get_id(), name=form.name.data, email=form.email.data)
+            db.session.add(seller)
+            db.session.commit()
+
+        create_user_cart(user.get_id(), type, new=True)
+        flash(f'You successfully created a {type} account!', 'success')
+        return redirect(url_for('login')) 
+    return render_template('add-user.html', title='Create an account', form=form, user_type=type)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run()

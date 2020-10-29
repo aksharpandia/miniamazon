@@ -1,7 +1,8 @@
 from app import db
+from flask_login import UserMixin
 
 # same as creating table
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "user"
     
     id = db.Column(db.Integer, primary_key=True)
@@ -10,25 +11,27 @@ class User(db.Model):
     password = db.Column(db.String(60))
     type = db.Column(db.String(120))
     dateJoined = db.Column(db.String(60))
-    balance = db.Column(db.Float)
-    shippingAddress = db.Column(db.String(120))
-    billingAddress = db.Column(db.String(120))
-    photo = db.Column(db.String(120))
+    # balance = db.Column(db.Float)
+    # shippingAddress = db.Column(db.String(120))
+    # billingAddress = db.Column(db.String(120))
+    # photo = db.Column(db.String(120))
 
-    def __init__(self, id, name, email, password, type, dateJoined, balance, shippingAddress, billingAddress, photo):
-        self.id = id
+    def __init__(self, name, email, password, type, dateJoined):
         self.name = name
         self.email = email
         self.password = password
         self.type = type
         self.dateJoined = dateJoined
-        self.balance = balance
-        self.shippingAddress = shippingAddress
-        self.billingAddress = billingAddress
-        self.photo = photo
+        # self.balance = balance
+        # self.shippingAddress = shippingAddress
+        # self.billingAddress = billingAddress
+        # self.photo = photo
 
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"
+    
+    def get_id(self):
+        return self.id
 
 class Product(db.Model):
     __tablename__ = "product"
@@ -178,9 +181,13 @@ class Seller(db.Model):
     __tablename__ = "seller"
 
     sellerID = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(120), unique=True)
 
-    def __init__(self, sellerID):
+    def __init__(self, sellerID, name, email):
         self.sellerID = sellerID
+        self.name = name
+        self.email = email
 
     def __repr__(self):
         return f"Seller('{self.sellerID}')"
@@ -189,9 +196,21 @@ class Buyer(db.Model):
     __tablename__ = "buyer"
 
     buyerID = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
+    balance = db.Column(db.Float)
+    shippingAddress = db.Column(db.String(120))
+    billingAddress = db.Column(db.String(120))
+    photo = db.Column(db.String(120))
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(120), unique=True)
 
-    def __init__(self, buyerID):
+    def __init__(self, buyerID, balance, shippingAddress, billingAddress, photo, name, email):
         self.buyerID = buyerID
+        self.balance = balance
+        self.shippingAddress = shippingAddress
+        self.billingAddress = billingAddress
+        self.photo = photo
+        self.name = name
+        self.email = email
 
     def __repr__(self):
         return f"Buyer('{self.buyerID}')"
