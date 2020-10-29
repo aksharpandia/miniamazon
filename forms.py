@@ -6,7 +6,6 @@ from models import *
 class AddProductForm(FlaskForm):
     productName = StringField('Product Name')
     modelNum = IntegerField('Model Number', validators=[InputRequired()])
-    userID = IntegerField('User ID', validators=[InputRequired()])
     productDescription = StringField('Product Description')
     productImage = FileField('Product Image', validators=[Regexp('[^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$')])
     stock = IntegerField('How many are you (re)stocking?')
@@ -76,7 +75,7 @@ class AddReviewsForm(FlaskForm):
     submit = SubmitField('Submit Review')
 
 class LogInForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired()])
+    email = StringField('Email', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')

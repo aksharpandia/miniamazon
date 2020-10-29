@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
 # loading the env
 load_dotenv('.env')
@@ -13,25 +14,28 @@ app = Flask(__name__)
 
 # configuring the database 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-print(os.getenv('DATABASE_URL'))
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 db = SQLAlchemy(app)
 
+# for login purposes
 bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-# importing the models
+# importing the models and forms
 from forms import *
 from models import *
 
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.query.get(int(user_id))
+    return user
+
 @app.route('/')
-def index():
+@login_required
+def main():
     return render_template('index.html')
-
-@app.route('/user')
-def user():
-    return render_template('user.html', users=User.query.all())
-
 
 def create_user_cart(userID, type, new=False):
     if type != "buyer":
@@ -45,11 +49,6 @@ def create_user_cart(userID, type, new=False):
     if new:
         db.session.add(cart)
     db.session.commit()
-
-
-@app.route('/seller')
-def seller():
-    return render_template('seller.html', sellers=Seller.query.all())
 
 @app.route('/seller/<seller_id>')
 def seller_id(seller_id):
@@ -69,15 +68,12 @@ def product():
 def addProduct(seller_id):
     form = AddProductForm()
     if request.method=='POST': # need to validate form
-        product = Product(form.productName.data, form.modelNum.data, form.userID.data,
+        product = Product(form.productName.data, form.modelNum.data, current_user.id,
                         form.productDescription.data, form.productImage.data, form.stock.data, form.isRecommended.data,
                         form.price.data)
         save_product_add(product, form, new=True)
         flash(f'You added {form.stock.data} {form.productName.data} product(s)!', 'success')
-        if int(seller_id) >= 0:
-            return redirect('/seller/' + str(seller_id))
-        else:
-            return redirect(url_for('product')) # redirect to product page so they can see the updated table
+        return redirect('/seller/' + str(seller_id))
     return render_template('add-product.html', title='Add to Your Product Listings', form=form)
 
 def save_product_add(product, form, new=False):
@@ -89,7 +85,7 @@ def save_product_add(product, form, new=False):
     # data from the user input
     product.productName = form.productName.data
     product.modelNum = form.modelNum.data
-    product.userID = form.userID.data # this needs to match the id of a seller due to foreign key constraint
+    product.userID = current_user.id # this needs to match the id of a seller due to foreign key constraint
     product.productDescription = form.productDescription.data
     product.productImage = form.productImage.data
     product.stockLeft += form.stock.data
@@ -150,7 +146,6 @@ def updateProduct(seller_id, product_id):
 def fillOutProductFields(product, form):
     form.productName.data = product.productName 
     form.modelNum.data = product.modelNum
-    form.userID.data = product.userID
     form.productDescription.data = product.productDescription 
     form.productImage.data = product.productImage
     form.stock.data = product.stockLeft
@@ -215,6 +210,13 @@ def save_reviews_add(reviews, form, new=False):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LogInForm()
+    if request.method == 'POST':
+        user = User.query.filter_by(email = form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            return redirect(url_for('main'))
+        else: 
+            flash('Login unsuccessful. Check your email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/choose-registration')
@@ -248,6 +250,11 @@ def register(type):
         flash(f'You successfully created a {type} account!', 'success')
         return redirect(url_for('login')) 
     return render_template('add-user.html', title='Create an account', form=form, user_type=type)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
