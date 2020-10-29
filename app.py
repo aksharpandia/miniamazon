@@ -109,7 +109,9 @@ def product_id(model_num):
         curr_product=Product.query.filter(Product.modelNum == model_num).one(),
         products=Product.query.filter(Product.modelNum == model_num),
         curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
-        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num))
+        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num,
+        curr_ratings=Review.query.filter(Reviews.modelNum == model_num).one(),
+        avg_rating=Reviews.query.filter(Review.modelNum == model_num).with_entities(func.avg(Reviews.rating))))
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
 def addProduct(seller_id):
