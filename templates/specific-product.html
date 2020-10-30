@@ -11,7 +11,7 @@
     </div>
 
     <div class="product-info">
-        <p class="product-img"><img src="http://placekitten.com/g/200/200" height="25%" width="auto" border="1px"></p>
+        <p class="product-img"><img src="{{ url_for('static',filename='images/trash-icon.png') }}" height="25%" width="auto" border="1px"></p>
         <div>
             <div class="seller-product-name">{{curr_product.productName}}</div>
             <div class="seller-product-avg-rating">Average Rating: {{avg_rating}}
