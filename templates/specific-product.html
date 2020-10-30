@@ -10,21 +10,19 @@
         <div class="product-category">{{curr_category.categoryName}}</div>
     </div>
 
-    {% for product in products %}
     <div class="product-info">
         <p class="product-img"><img src="http://placekitten.com/g/200/200" height="25%" width="auto" border="1px"></p>
         <div>
-            <div class="seller-product-name">{{product.productName}}</div>
+            <div class="seller-product-name">{{curr_product.productName}}</div>
             <div class="seller-product-avg-rating">Average Rating: {{avg_rating}}
-            <div class="seller-product-desc">{{product.productDescription}}</div>
-            <!-- <div class="seller-product-price">${{product.price}}</div> -->
-            <div class="seller-product-quantity">Qty Left: {{product.stockLeft}}</div>
+            <div class="seller-product-desc">{{curr_product.productDescription}}</div>
+            <div class="seller-product-quantity">Qty Left: {{curr_product.stockLeft}}</div>
         </div>
     </div>
     <br><br><br><br>
 
     <div>
-        <!-- still need to make it for multiple sellers, and make "add to cart" button functional -->
+        <!-- still need to make "add to cart" button functional -->
         <div class="product-description">List of sellers selling this product:</div>
         <table>
             <thead>
@@ -45,5 +43,4 @@
             </tbody>
         </table>
     </div>
-    {% endfor %}
 {% endblock content %}

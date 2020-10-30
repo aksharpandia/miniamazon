@@ -45,6 +45,8 @@ db.session.commit()
 # adding to product table (10 products) - make sure all the userID match IDs int he SELLER table
 product1 = Product(123456789, 0, '13-inch MacBook Pro', 'img1.jpg', '13" MacBook Pro', 0, True, 1200.00)
 db.session.add(product1)
+product11 = Product(123456789, 1, '13-inch MacBook Pro', 'img1.jpg', '13" MacBook Pro', 0, True, 900.00)
+db.session.add(product11)
 product2 = Product(123456790, 0, '16-inch MacBook Pro', 'img2.jpg', '16" MacBook Pro', 1, False, 1200.00)
 db.session.add(product2)
 product3 = Product(123456791, 0, '11-inch MacBook Air', 'img6.jpg', '11" MacBook Air', 1, False, 1200.00)
@@ -63,8 +65,6 @@ product9 = Product(135357580, 2, '10.9-inch iPad Air (4th generation)', 'img9.jp
 db.session.add(product9)
 product10 = Product(135357581, 2, '10.2-inch iPad (8th generation)', 'img10.jpg', 'iPad 8th Generation', 1, False, 700.00)
 db.session.add(product10)
-# product11 = Product(135357581, 0, '10.2-inch iPad (8th generation)', 'img10.jpg', 'iPad 8th Generation', 1, False, 800.00)
-# db.session.add(product11)
 
 db.session.commit()
 

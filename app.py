@@ -107,7 +107,7 @@ def product():
 @app.route('/product/<model_num>')
 def product_id(model_num):
     return render_template('specific-product.html', 
-        curr_product=Product.query.filter(Product.modelNum == model_num).one(),
+        curr_product=Product.query.filter(Product.modelNum == model_num).first(),
         products=Product.query.filter(Product.modelNum == model_num),
         # curr_seller=Product.query.filter(Product.modelNum == model_num).with_entities(Product.userID).one(),
         all_sellers=
