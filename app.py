@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
+from sqlalchemy.sql import text, func
 import os
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
@@ -63,6 +64,22 @@ def buyer():
 @app.route('/product')
 def product():
     return render_template('product.html', products=Product.query.all())
+
+@app.route('/product/<model_num>')
+def product_id(model_num):
+    return render_template('specific-product.html', 
+        curr_product=Product.query.filter(Product.modelNum == model_num).first(),
+        products=Product.query.filter(Product.modelNum == model_num),
+        # curr_seller=Product.query.filter(Product.modelNum == model_num).with_entities(Product.userID).one(),
+        all_sellers=
+            Product.query\
+            .join(User, User.id == Product.userID).filter(Product.modelNum == model_num)
+            .with_entities(User.name, Product.stockLeft, Product.price),
+        curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
+        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
+        ratings=Reviews.query.filter(Reviews.modelNum == model_num),
+        avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0'),
+        )
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
 def addProduct(seller_id):
