@@ -1,0 +1,33 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/choose-user-type.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="choose-user-container">
+    <div class="choose-user-type">
+        <div class="choose-user-heading">
+            Sign up as a:
+        </div>
+        <div class="user-choice-container">
+            <div class="user-choice">
+                <a class="user-choice-text" href="/register/buyer">
+                    Buyer
+                </a>
+            </div>
+        
+            <div class="user-choice">
+                <a class="user-choice-text" href="/register/seller">
+                    Seller
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="border-top pt-3 back-to-login-text">
+    <small class="text-muted">
+        <a class="ml-2" href="{{ url_for('login') }}">Back To Login</a>
+    </small>
+</div>
+
+{% endblock content %}

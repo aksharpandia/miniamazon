@@ -1,0 +1,39 @@
+.choose-user-heading {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.user-choice-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.user-choice {
+    height: 50px;
+    background-color: #F6F5F5;
+    text-align: center;
+    width: 40%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-choice-text {
+    text-decoration: none;
+    margin: auto;
+}
+
+.choose-user-type {
+    width: 100%;
+}
+
+.choose-user-container {
+    display: flex;
+    padding: 50px;
+}
+
+.back-to-login-text {
+    text-align: center;
+}
+
