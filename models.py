@@ -131,7 +131,7 @@ class IsPlacedInCart(db.Model):
     __tablename__ = "IsPlacedInCart"
 
     itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
-    cartID = db.Column(db.Integer)
+    cartID = db.Column(db.Integer, db.ForeignKey('cart.cartID'), primary_key=True)
     
     def __init__(self, cartID, itemID):
         self.cartID = cartID 
@@ -158,6 +158,13 @@ class Order(db.Model):
 
     def __repr__(self):
         return f"Order('{self.orderID}','{self.transacAmount}')"
+
+# class ItemsInOrder(db.Model):
+#     __tablename__ = "ItemsInOrder"
+
+#     orderID = db.Column(db.Integer, primary_key=True)
+#     itemID = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
 class Reviews(db.Model):
     __tablename__ = "Reviews"
