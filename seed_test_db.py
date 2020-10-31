@@ -67,7 +67,7 @@ db.session.add(product10)
 db.session.commit()
 
 # adding to item table (10 items)
-item1 = Item(123000001, True) 
+item1 = Item(123000001, True)
 db.session.add(item1)
 item2 = Item(123000002, False) 
 db.session.add(item2)
@@ -108,8 +108,18 @@ item19 = Item (791000002, False)
 db.session.add(item19)
 item20 = Item (791000003, False) 
 db.session.add(item20)
-
 db.session.commit()
+
+# Adding BelongsToProduct table
+btp = BelongsToProduct(123456789, 1, 123000001)
+db.session.add(btp)
+btp = BelongsToProduct(123456790, 1, 123000002)
+db.session.add(btp)
+btp = BelongsToProduct(123456791, 1, 123000003)
+db.session.add(btp)
+btp = BelongsToProduct(246468680, 2, 123000004)
+db.session.add(btp)
+# To finish later...
 
 # adding to category table (2 categories)
 category1 = Category('Electronics', 10)

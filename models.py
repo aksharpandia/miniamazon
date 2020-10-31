@@ -102,11 +102,13 @@ class BelongsToProduct(db.Model):
     # relationship set between an item and a product
     __tablename__ = "belongstoproduct"
 
-    modelNum = db.Column(db.Integer, primary_key=True)
-    itemID = db.Column(db.Integer, primary_key=True)
+    modelNum = db.Column(db.Integer)
+    userID = db.Column(db.Integer)
+    itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
 
-    def __init__(self, modelNum, categoryName):
-        self.modelNum = modelNum 
+    def __init__(self, modelNum, userID, itemID):
+        self.modelNum = modelNum
+        self.userID = userID
         self.itemID = itemID 
 
     def __repr__(self):
@@ -138,7 +140,7 @@ class IsPlacedInCart(db.Model):
         self.itemID = itemID
 
     def __repr__(self):
-        return f"Cart('{self.cartID}'. '{self.itemID}')"
+        return f"IsPlacedInCart('{self.cartID}'. '{self.itemID}')"
 
 class Order(db.Model):
     __tablename__ = "order"
@@ -159,11 +161,18 @@ class Order(db.Model):
     def __repr__(self):
         return f"Order('{self.orderID}','{self.transacAmount}')"
 
-# class ItemsInOrder(db.Model):
-#     __tablename__ = "ItemsInOrder"
+class ItemsInOrder(db.Model):
+    __tablename__ = "ItemsInOrder"
 
-#     orderID = db.Column(db.Integer, primary_key=True)
-#     itemID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    orderID = db.Column(db.Integer, db.ForeignKey('order.orderID'), primary_key=True)
+    itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
+
+    def __init__(self, orderID, itemID):
+        self.orderID = orderID 
+        self.itemID = itemID
+
+    def __repr__(self):
+        return f"ItemsInOrder('{self.orderID}'. '{self.itemID}')"
 
 
 class Reviews(db.Model):
