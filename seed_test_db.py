@@ -141,25 +141,25 @@ db.session.add(belongs10)
 db.session.commit()
 
 # adding to cart table
-cart1 = Cart(333, 4, "2020-10-10")
+cart1 = Cart(444, 4, "2020-10-10")
 db.session.add(cart1)
-cart2 = Cart(444, 5, "2020-10-02")
+cart2 = Cart(555, 5, "2020-10-02")
 db.session.add(cart2)
-cart3 = Cart(555, 6, "2020-10-11")
+cart3 = Cart(666, 6, "2020-10-11")
 db.session.add(cart3)
 db.session.commit()
 
 
 # adding to isPlacedInCart table
-itemcart1 = IsPlacedInCart(333, 123000001)
+itemcart1 = IsPlacedInCart(444, 357000002)
 db.session.add(itemcart1)
-itemcart2 = IsPlacedInCart(333, 357000001)
+itemcart2 = IsPlacedInCart(444, 357000003)
 db.session.add(itemcart2)
-itemcart3 = IsPlacedInCart(333, 579000003)
+itemcart3 = IsPlacedInCart(444, 579000003)
 db.session.add(itemcart3)
-itemcart4 = IsPlacedInCart(333, 791000002)
+itemcart4 = IsPlacedInCart(555, 791000002)
 db.session.add(itemcart4)
-itemcart5 = IsPlacedInCart(333, 791000003)
+itemcart5 = IsPlacedInCart(666, 791000003)
 db.session.add(itemcart5)
 db.session.commit()
 
@@ -241,6 +241,7 @@ itemtoadd = ItemsInOrder(1008, 579000002)
 db.session.add(itemtoadd)
 itemtoadd = ItemsInOrder(1009, 791000001)
 db.session.add(itemtoadd)
+db.session.commit()
 
 # adding to review table
 reviews1 = Reviews(1, 2, "awful product", "2020-04-23", 4, 123456789)
