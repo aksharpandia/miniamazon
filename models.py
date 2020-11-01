@@ -63,10 +63,14 @@ class Item(db.Model):
 
     itemID = db.Column(db.Integer, primary_key=True)
     isSold = db.Column(db.Boolean, nullable=False)
+    modelNum = db.Column(db.Integer)
+    userID = db.Column(db.Integer)
 
-    def __init__(self, itemID, isSold):
+    def __init__(self, itemID, isSold, modelNum, userID):
         self.itemID = itemID 
-        self.isSold = isSold 
+        self.isSold = isSold
+        self.modelNum = modelNum
+        self.userID = userID
 
     def __repr__(self):
         return f"Item('{self.itemID}', '{self.isSold}')"
@@ -98,21 +102,21 @@ class BelongsToCategory(db.Model):
     def __repr__(self):
         return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
 
-class BelongsToProduct(db.Model):
-    # relationship set between an item and a product
-    __tablename__ = "belongstoproduct"
+# class BelongsToProduct(db.Model):
+#     # relationship set between an item and a product
+#     __tablename__ = "belongstoproduct"
 
-    modelNum = db.Column(db.Integer)
-    userID = db.Column(db.Integer)
-    itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
+#     modelNum = db.Column(db.Integer)
+#     userID = db.Column(db.Integer)
+#     itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
 
-    def __init__(self, modelNum, userID, itemID):
-        self.modelNum = modelNum
-        self.userID = userID
-        self.itemID = itemID 
+#     def __init__(self, modelNum, userID, itemID):
+#         self.modelNum = modelNum
+#         self.userID = userID
+#         self.itemID = itemID 
 
-    def __repr__(self):
-        return f"BelongsToProduct('{self.modelNum}', '{self.itemID}')"
+#     def __repr__(self):
+#         return f"BelongsToProduct('{self.modelNum}', '{self.itemID}')"
 
 class Cart(db.Model):
     __tablename__ = "cart"
