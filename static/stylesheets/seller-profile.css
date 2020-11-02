@@ -10,6 +10,7 @@
     height: 120px;
     padding: 10px;
     display: flex;
+    cursor: pointer;
 }
 
 .seller-product-actions {

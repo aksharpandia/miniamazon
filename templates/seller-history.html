@@ -17,9 +17,9 @@
             Click the arrow for each product to see a breakdown of which buyers bought that product.
         </div>
         {% for product in sold_products %}
-            <div class="seller-product-row" onclick="window.location.href='product/{{product.modelNum}}';">
+            <div class="seller-product-row">
                 <div class="seller-product-info">
-                    <div class="seller-product-name"> {{product.productName}} </div>
+                    <div class="seller-product-name" onclick="window.location.href='product/{{product.modelNum}}';"> {{product.productName}} </div>
                     <div class="seller-product-quantity"> Num Sold: {{product.numSold}} </div>
                 </div>
 

@@ -31,9 +31,9 @@
         </div>
 
         {% for product in products %}
-        <div class="seller-product-row" onclick="window.location.href='product/{{product.modelNum}}';">
+        <div class="seller-product-row">
             <div class="seller-product-info">
-                <div class="seller-product-name">{{product.productName}}</div>
+                <div class="seller-product-name" onclick="window.location.href='product/{{product.modelNum}}';">{{product.productName}}</div>
                 <form class="modify-product-section" action="{{url_for('updateProduct', seller_id=curr_seller.id, product_id=product.modelNum) }}" , method="GET">
                     <input class="modify-product-icon" type="image" src="{{ url_for('static',filename='images/edit-icon.png') }}" />
                 </form>
