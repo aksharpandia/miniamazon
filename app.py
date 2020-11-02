@@ -43,6 +43,7 @@ def main():
     return render_template('index.html',
     curr_product=Product.query.all()[0],
     products=Product.query.all(),
+    mycart = Cart.query.filter(Cart.buyerID == current_user.id).first(),
     recommended=Product.query.filter(Product.modelNum==Reviews.modelNum and Reviews.rating >= 4.0).limit(5).all(),
     form=form)
 
