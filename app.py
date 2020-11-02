@@ -185,12 +185,12 @@ def deleteProduct(seller_id, product_id):
 @app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
 def updateCart(cart_id, model_num, user_id):
     if request.method == 'POST':
-        #itemsincart = IsPlacedInCart.query('itemID').filter(IsPlacedInCart.cartID==cart_id).all()
-        #itemsincart = itemsincart.options(defer("cartID"))
-        #print(itemsincart)
+        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
+            filter(IsPlacedInCart.cartID == cart_id).all()]
         itemtoadd = Item.query.filter(Item.modelNum == model_num, 
             Item.userID == user_id,
-            Item.isSold == False).first()
+            Item.isSold == False,
+            ~Item.itemID.in_(itemsincart)).first()
         if itemtoadd is None:
             flash(
             f'Product {model_num} is out of stock!', 'failure')
