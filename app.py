@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
-from sqlalchemy.sql import text, func
+from sqlalchemy.sql import text, func, select
 import os
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
@@ -43,6 +43,7 @@ def main():
     return render_template('index.html',
     curr_product=Product.query.all()[0],
     products=Product.query.all(),
+    mycart = Cart.query.filter(Cart.buyerID == current_user.id).first(),
     recommended=Product.query.filter(Product.modelNum==Reviews.modelNum and Reviews.rating >= 4.0).limit(5).all(),
     form=form)
 
@@ -73,24 +74,15 @@ def create_user_cart(userID, type, new=False):
         db.session.add(cart)
     db.session.commit()
 
-@app.route('/seller')
-def seller_id():
+@app.route('/seller/<seller_id>')
+def seller_id(seller_id):
+    form = SearchForm()
+    if request.method == 'POST':
+        return searchResults(search)
+
     return render_template('seller-product.html', 
-        curr_seller=current_user, 
-        products=Product.query.filter(Product.userID == current_user.id))
-
-@app.route('/seller-history')
-def seller_history():
-    return render_template('seller-history.html',
-    sold_products = db.session.query(Product.productName, Product.modelNum, db.func.count(Item.isSold).label("numSold")).join(Item, Product.modelNum == Item.modelNum)
-        .filter(Item.isSold.is_(True), Product.userID == current_user.id).group_by(Product.modelNum, Product.productName).all())
-
-@app.route('/seller-history/<model_num>', methods=['GET', 'POST'])
-def seller_history_product(model_num):
-    return render_template('seller-history-product.html',
-        curr_product = Product.query.filter(Product.modelNum == model_num).first(),
-        sold_items = db.session.query(Item.itemID, Buyer.name, Order.createdDateTime).filter(Item.modelNum == model_num).join(ItemsInOrder, Item.itemID == ItemsInOrder.itemID)
-        .join(Order, ItemsInOrder.orderID == Order.orderID).join(Buyer, Order.buyerID == Buyer.buyerID))
+        curr_seller=User.query.filter(User.id == seller_id).one(), 
+        products=Product.query.filter(Product.userID == seller_id), form=form)
 
 @app.route('/buyer')
 def buyer():
@@ -134,8 +126,7 @@ def addProduct(seller_id):
                         form.price.data)
         save_product_add(product, form, new=True)
         flash(f'You added {form.stock.data} {form.productName.data} product(s)!', 'success')
-        # return redirect('/seller/' + str(seller_id))
-        return redirect('/seller')
+        return redirect('/seller/' + str(seller_id))
     return render_template('add-product.html', title='Add to Your Product Listings', form=form)
 
 def save_product_add(product, form, new=False):
@@ -188,8 +179,29 @@ def deleteProduct(seller_id, product_id):
         db.session.commit()
         flash(
             f'You successfully deleted {prodToDelete.productName}!', 'success')
-        # return redirect('/seller/' + str(seller_id))
-        return redirect('/seller')
+        return redirect('/seller/' + str(seller_id))
+
+
+@app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
+def updateCart(cart_id, model_num, user_id):
+    if request.method == 'POST':
+        #itemsincart = IsPlacedInCart.query('itemID').filter(IsPlacedInCart.cartID==cart_id).all()
+        #itemsincart = itemsincart.options(defer("cartID"))
+        #print(itemsincart)
+        itemtoadd = Item.query.filter(Item.modelNum == model_num, 
+            Item.userID == user_id,
+            Item.isSold == False).first()
+        if itemtoadd is None:
+            flash(
+            f'Product {model_num} is out of stock!', 'failure')
+            return redirect('/cart/' + cart_id)
+        reltoadd = IsPlacedInCart(cart_id, itemtoadd.itemID)
+        db.session.add(reltoadd)
+        db.session.commit()
+        flash(
+            f'You successfully added {itemtoadd.itemID}!', 'success')
+        return redirect('/cart/' + cart_id)
+
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
 def updateProduct(seller_id, product_id):
@@ -200,8 +212,7 @@ def updateProduct(seller_id, product_id):
     if request.method == 'POST':
         flash(f'You successfully updated {prodToUpdate.productName}!', 'success')
         save_product_add(prodToUpdate, form, new=False)
-        # return redirect('/seller/' + str(seller_id))
-        return redirect('/seller')
+        return redirect('/seller/' + str(seller_id))
     elif request.method == 'GET':
         fillOutProductFields(prodToUpdate, form)
     return render_template('add-product.html', title='Update Your Product', form=form)
