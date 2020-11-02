@@ -6,11 +6,32 @@
 {% block content %}
     <div class="title-text">Welcome to our Mini Amazon store!</div>
     
+    <div class="subtitle-text">Recommended Products</div>
+    <div class="home-product-grid">
+        {% for rec in recommended %}
+        <div class="home-product-item">
+            <div class="product-info">
+                <!-- replace with correct image-->
+                <img class="product-img" src="{{ url_for('static',filename='images/13MacBookPro.jpeg') }}">
+                <br>
+                <div>
+                    <div class="seller-product-name">{{rec.productName}}</div>
+                    <div class="seller-product-price">$ {{rec.price}}</div>
+                    <a href="/product/{{rec.modelNum}}">View Product</a><br>
+                    <a href="">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="subtitle-text">All Products</div>
+    <div class="home-product-grid">
     {% for product in products %}
-    <div class="home-product-row">
+    <div class="home-product-item">
         <div class="product-info">
             <!-- replace with correct image-->
-            <p class="product-img"><img src="{{ url_for('static',filename='images/13MacBookPro.jpeg') }}" height="25%" width="auto" border="1px"></p>
+            <img class="product-img" src="{{ url_for('static',filename='images/13MacBookPro.jpeg') }}">
             <br>
             <div>
                 <div class="seller-product-name">{{product.productName}}</div>
@@ -23,23 +44,7 @@
         </div>
     </div>
     {% endfor %}
-
-    <div class="title-text">Recommended Products</div>
-    {% for rec in recommended %}
-    <div class="home-product-row">
-        <div class="product-info">
-            <!-- replace with correct image-->
-            <p class="product-img"><img src="{{ url_for('static',filename='images/13MacBookPro.jpeg') }}" height="25%" width="auto" border="1px"></p>
-            <br>
-            <div>
-                <div class="seller-product-name">{{rec.productName}}</div>
-                <div class="seller-product-price">$ {{rec.price}}</div>
-                <a href="/product/{{rec.modelNum}}">View Product</a><br>
-                <a href="">Add to Cart</a>
-            </div>
-        </div>
     </div>
-    {% endfor %}
 
 
 {% endblock content %}
