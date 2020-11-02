@@ -3,6 +3,10 @@ from wtforms import StringField, IntegerField, FileField, SubmitField, BooleanFi
 from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationError
 from models import *
 
+class SearchForm(FlaskForm):
+    search = StringField('', [DataRequired()])
+#   submit = SubmitField('Search', render_kw={'class': 'btn btn-success btn-block'})
+
 class AddProductForm(FlaskForm):
     productName = StringField('Product Name')
     modelNum = IntegerField('Model Number', validators=[InputRequired()])
