@@ -168,7 +168,7 @@ def addProduct(seller_id):
                         form.price.data)
         save_product_add(product, form, new=True)
         flash(f'You added {form.stock.data} {form.productName.data} product(s)!', 'success')
-        return redirect('/seller/' + str(seller_id))
+        return redirect('/seller')
     return render_template('add-product.html', title='Add to Your Product Listings', form=form)
 
 def save_product_add(product, form, new=False):
@@ -221,7 +221,7 @@ def deleteProduct(seller_id, product_id):
         db.session.commit()
         flash(
             f'You successfully deleted {prodToDelete.productName}!', 'success')
-        return redirect('/seller/' + str(seller_id))
+        return redirect('/seller')
 
 
 @app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
@@ -254,7 +254,7 @@ def updateProduct(seller_id, product_id):
     if request.method == 'POST':
         flash(f'You successfully updated {prodToUpdate.productName}!', 'success')
         save_product_add(prodToUpdate, form, new=False)
-        return redirect('/seller/' + str(seller_id))
+        return redirect('/seller')
     elif request.method == 'GET':
         fillOutProductFields(prodToUpdate, form)
     return render_template('add-product.html', title='Update Your Product', form=form)
