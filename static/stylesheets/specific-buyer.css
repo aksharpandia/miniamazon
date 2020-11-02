@@ -1,0 +1,35 @@
+
+.buyer-name {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.buyer-email {
+    font-size: 16px;
+    color: #000000;
+}
+
+.buyer-shippingAddress {
+    font-size: 12px;
+    color: grey;
+}
+
+.buyer-billingAddress {
+    font-size: 12px;
+    color: grey;
+}
+
+.buyer-balance {
+    font-size: 12px;
+    color: grey;
+}
+
+.buyer-info-header {
+    text-align: center;
+    margin-top: 5em;
+}
+
+.buyer-photo {
+    float: left;
+    margin-right: 5em;
+}

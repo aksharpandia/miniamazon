@@ -88,6 +88,31 @@ def seller_id(seller_id):
 def buyer():
     return render_template('buyer.html', buyers=Buyer.query.all())
 
+@app.route('/buyer/<buyer_ID>')
+def buyer_ID(buyer_ID):
+    return render_template('specific-buyer.html', 
+        curr_buyer=Buyer.query.filter(Buyer.buyerID == buyer_ID).first()
+    )
+
+@app.route('/buyer/<buyer_ID>/addBalance', methods=['GET', 'POST'])
+def addBalance(buyer_ID):
+    form = AddBalanceForm()
+    curr_buyer = Buyer.query.filter(Buyer.buyerID == buyer_ID).first()
+    if request.method=='POST': # need to validate form
+        balance = curr_buyer.balance + form.newbalance.data
+        save_balance_add(curr_buyer, balance, form, new=True)
+        flash(f'You added {form.newbalance.data} to the balance', 'success')
+        return redirect('/buyer/' + str(buyer_ID)) # redirect to buyer profile page so they can see the updated table
+    return render_template('add-balance.html', title='Add Balance', form=form)
+    
+
+def save_balance_add(curr_buyer, balance, form, new=False):
+    curr_buyer.balance = balance
+    if new:
+        db.session.add(curr_buyer)
+    db.session.commit()
+
+
 @app.route('/product')
 def product():
     form = SearchForm()
