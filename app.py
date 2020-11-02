@@ -96,10 +96,6 @@ def seller_history():
 
 @app.route('/seller-history/<model_num>', methods=['GET', 'POST'])
 def seller_history_product(model_num):
-    form = SearchForm()
-    if request.method == 'POST':
-        return searchResults(search)
-        
     return render_template('seller-history-product.html',
         curr_product = Product.query.filter(Product.modelNum == model_num).first(),
         sold_items = db.session.query(Item.itemID, Buyer.name, Order.createdDateTime).filter(Item.modelNum == model_num).join(ItemsInOrder, Item.itemID == ItemsInOrder.itemID)
