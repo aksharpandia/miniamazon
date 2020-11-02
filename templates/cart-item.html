@@ -18,5 +18,9 @@
             {% endfor %}
         </tbody>
     </table>
+    <form action="{{url_for('createOrder', cart_id=curr_cart.cartID)}}"
+    method="POST" id="createOrder/{{curr_cart.cartID}}">
+    </form>
+    <button type="submit" form="createOrder/{{curr_cart.cartID}}">Create Order </button>
     <br><br>
 {% endblock content %}
