@@ -22,6 +22,18 @@
     text-decoration: none;
 }
 
+li#logo {
+    width: 100px;
+    height: auto;
+}
+
+#amazon-logo {
+    padding: 14px 16px;
+    margin-top: 5px;
+    width: 100px;
+    height: auto;
+}
+
 .errors {
     color: red;
 }

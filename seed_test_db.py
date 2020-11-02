@@ -43,7 +43,7 @@ db.session.add(buyer2)
 db.session.commit()
 
 # adding to product table (10 products) - make sure all the userID match IDs int he SELLER table
-product1 = Product(123456789, 1, '13-inch MacBook Pro', 'img1.jpg', '13" MacBook Pro', 0, True, 1200.00)
+product1 = Product(123456789, 1, '13-inch MacBook Pro', '13MacBookPro.jpeg', '13" MacBook Pro', 0, True, 1200.00)
 db.session.add(product1)
 product2 = Product(123456790, 1, '16-inch MacBook Pro', 'img2.jpg', '16" MacBook Pro', 1, False, 1200.00)
 db.session.add(product2)
