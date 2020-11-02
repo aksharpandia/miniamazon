@@ -1,0 +1,23 @@
+{% macro seller_nav(seller_name, update_product_class, transac_history_class) %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/_seller-nav.css') }}">
+</head>
+
+<div class="seller-nav-bar">
+    <div class="seller-name">
+        {{ seller_name }}
+    </div>
+
+    <div class="seller-nav-row {{update_product_class}}">
+        <a class="seller-nav-row-text" href="/seller">
+            Update Products
+        </a>
+    </div> 
+
+    <div class="seller-nav-row {{transac_history_class}}">
+        <a class="seller-nav-row-text" href='/seller-history'>
+            Transaction History
+        </a>
+    </div>
+</div>
+{% endmacro %}
