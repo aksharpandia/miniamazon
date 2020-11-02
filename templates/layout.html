@@ -9,6 +9,7 @@
 
 <body>
     <ul class="nav-bar">
+        <li class="nav-element" id="logo"><img src="{{ url_for('static',filename='/images/amazon-logo.png') }}" id="amazon-logo"></li>
         <li class="nav-element"><a href="/">Home</a></li>
 
         {% if current_user.type == 'buyer' %}
