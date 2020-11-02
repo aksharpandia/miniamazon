@@ -74,15 +74,36 @@ def create_user_cart(userID, type, new=False):
         db.session.add(cart)
     db.session.commit()
 
-@app.route('/seller/<seller_id>')
-def seller_id(seller_id):
+@app.route('/seller')
+def seller_id():
     form = SearchForm()
     if request.method == 'POST':
         return searchResults(search)
 
     return render_template('seller-product.html', 
-        curr_seller=User.query.filter(User.id == seller_id).one(), 
-        products=Product.query.filter(Product.userID == seller_id), form=form)
+        curr_seller=current_user, 
+        products=Product.query.filter(Product.userID == current_user.id))
+
+@app.route('/seller-history')
+def seller_history():
+    form = SearchForm()
+    if request.method == 'POST':
+        return searchResults(search)
+
+    return render_template('seller-history.html',
+    sold_products = db.session.query(Product.productName, Product.modelNum, db.func.count(Item.isSold).label("numSold")).join(Item, Product.modelNum == Item.modelNum)
+        .filter(Item.isSold.is_(True), Product.userID == current_user.id).group_by(Product.modelNum, Product.productName).all())
+
+@app.route('/seller-history/<model_num>', methods=['GET', 'POST'])
+def seller_history_product(model_num):
+    form = SearchForm()
+    if request.method == 'POST':
+        return searchResults(search)
+        
+    return render_template('seller-history-product.html',
+        curr_product = Product.query.filter(Product.modelNum == model_num).first(),
+        sold_items = db.session.query(Item.itemID, Buyer.name, Order.createdDateTime).filter(Item.modelNum == model_num).join(ItemsInOrder, Item.itemID == ItemsInOrder.itemID)
+        .join(Order, ItemsInOrder.orderID == Order.orderID).join(Buyer, Order.buyerID == Buyer.buyerID))
 
 @app.route('/buyer')
 def buyer():
