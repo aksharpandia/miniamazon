@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
-from sqlalchemy.sql import text, func
+from sqlalchemy.sql import text, func, select
 import os
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
@@ -191,6 +191,28 @@ def deleteProduct(seller_id, product_id):
             f'You successfully deleted {prodToDelete.productName}!', 'success')
         # return redirect('/seller/' + str(seller_id))
         return redirect('/seller')
+
+
+@app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
+def updateCart(cart_id, model_num, user_id):
+    if request.method == 'POST':
+        #itemsincart = IsPlacedInCart.query('itemID').filter(IsPlacedInCart.cartID==cart_id).all()
+        #itemsincart = itemsincart.options(defer("cartID"))
+        #print(itemsincart)
+        itemtoadd = Item.query.filter(Item.modelNum == model_num, 
+            Item.userID == user_id,
+            Item.isSold == False).first()
+        if itemtoadd is None:
+            flash(
+            f'Product {model_num} is out of stock!', 'failure')
+            return redirect('/cart/' + cart_id)
+        reltoadd = IsPlacedInCart(cart_id, itemtoadd.itemID)
+        db.session.add(reltoadd)
+        db.session.commit()
+        flash(
+            f'You successfully added {itemtoadd.itemID}!', 'success')
+        return redirect('/cart/' + cart_id)
+
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
 def updateProduct(seller_id, product_id):

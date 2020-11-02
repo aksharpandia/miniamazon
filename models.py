@@ -136,8 +136,8 @@ class Cart(db.Model):
 class IsPlacedInCart(db.Model):
     __tablename__ = "IsPlacedInCart"
 
-    itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
     cartID = db.Column(db.Integer, db.ForeignKey('cart.cartID'), primary_key=True)
+    itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
     
     def __init__(self, cartID, itemID):
         self.cartID = cartID 
