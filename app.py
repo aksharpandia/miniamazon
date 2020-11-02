@@ -244,6 +244,27 @@ def updateCart(cart_id, model_num, user_id):
             f'You successfully added {itemtoadd.itemID}!', 'success')
         return redirect('/cart/' + cart_id)
 
+@app.route('/createorder/<cart_id>', methods=['GET', 'POST'])
+def createOrder(cart_id):
+    if request.method == 'POST':
+        orderID = randint(0,999999)
+        newOrder = Order(orderID, current_user.id, 100, 'express', "10-01-2020")
+        db.session.add(newOrder)
+        db.session.commit()
+        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
+            filter(IsPlacedInCart.cartID == cart_id).all()]
+        for itemID in itemsincart:
+            newItemsInOrder = ItemsInOrder(orderID, itemID)
+            db.session.add(newItemsInOrder)
+            db.session.commit()
+            itemtodel = IsPlacedInCart.query.filter(IsPlacedInCart.itemID == itemID,
+                IsPlacedInCart.cartID == cart_id).first()
+            db.session.delete(itemtodel)
+            db.session.commit()
+        flash(
+            f'You successfully created {newOrder.orderID}!', 'success')
+        return redirect('/order')
+
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
 def updateProduct(seller_id, product_id):
