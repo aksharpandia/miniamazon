@@ -18,7 +18,7 @@
 }
 
 .home-product-row > div{
-    background-color: orange;
+    /* background-color: orange; */
     text-align: center;
     margin: 0 auto;
 }
@@ -31,6 +31,11 @@
 /* .product-img {
     float: top;
 } */
+
+.product-title {
+    font-size: 40px;
+    font-weight: bold;
+}
 
 .seller-product-name {
     font-weight: 600;

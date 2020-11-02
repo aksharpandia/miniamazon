@@ -42,7 +42,9 @@ def main():
     
     return render_template('index.html',
     curr_product=Product.query.all()[0],
-    products=Product.query.all(), form=form)
+    products=Product.query.all(),
+    recommended=Product.query.filter(Product.modelNum==Reviews.modelNum and Reviews.rating >= 4.0).limit(5).all(),
+    form=form)
 
 @app.route('/search-results', methods=['GET', 'POST'])
 def searchResults():
