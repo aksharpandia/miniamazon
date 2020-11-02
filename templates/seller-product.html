@@ -1,48 +1,54 @@
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/seller-product.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/seller-profile.css') }}">
 </head>
 
 {% extends "layout.html" %}
 {% block content %}
-    <div class="seller-title">Hello {{curr_seller.name}}! </div>
-    <div class="products-update-description">
-        1) Click on the plus icon to add a new product.
-    </div>
-    <div class="products-update-description">
-        2) Click on the pencil icon next to a product's name to update the product.
-    </div>
-    <div class="products-update-description">
-        3) Click on the red trash can to delete a product.
-    </div>
+    {% from "_seller-nav.html" import seller_nav %}
+    {{seller_nav(curr_seller.name, "seller-nav-row-selected", "seller-nav-row")}}
 
-    
-    <div class="all-products-title">
-        Your Products
-    </div>
+    <div class="seller-main">
 
-    <div class="add-product-section">
-        <img class="add-product-icon" src="{{ url_for('static',filename='images/plus-icon.png') }}">
-        <a href="{{ url_for('addProduct', seller_id=curr_seller.id) }}" class="add-product-link">Add A Product</a>
-    </div>
-
-    {% for product in products %}
-    <div class="seller-product-row">
-        <div class="seller-product-info">
-            <div class="seller-product-name">{{product.productName}}</div>
-            <form class="modify-product-section" action="{{url_for('updateProduct', seller_id=curr_seller.id, product_id=product.modelNum) }}" , method="GET">
-                <input class="modify-product-icon" type="image" src="{{ url_for('static',filename='images/edit-icon.png') }}" />
-            </form>
-
-            <div class="seller-product-desc">{{product.productDescription}}</div>
-            <div class="seller-product-quantity">Qty: {{product.stockLeft}}</div>
+        <div class="seller-title">Update Products </div>
+        <div class="products-description">
+            1) Click on the plus icon to add a new product.
         </div>
-    
-        <div class="seller-product-actions">
-            <form action="{{url_for('deleteProduct', seller_id=curr_seller.id, product_id=product.modelNum) }}" ,
-                method="POST">
-                <input class="delete-product-icon" type="image" src="{{ url_for('static',filename='images/trash-icon.png') }}" />
-            </form>
+        <div class="products-description">
+            2) Click on the pencil icon next to a product's name to update the product.
         </div>
+        <div class="products-description">
+            3) Click on the red trash can to delete a product.
+        </div>
+
+        
+        <div class="all-products-title">
+            Your Products
+        </div>
+
+        <div class="add-product-section">
+            <img class="add-product-icon" src="{{ url_for('static',filename='images/plus-icon.png') }}">
+            <a href="{{ url_for('addProduct', seller_id=curr_seller.id) }}" class="add-product-link">Add A Product</a>
+        </div>
+
+        {% for product in products %}
+        <div class="seller-product-row" onclick="window.location.href='product/{{product.modelNum}}';">
+            <div class="seller-product-info">
+                <div class="seller-product-name">{{product.productName}}</div>
+                <form class="modify-product-section" action="{{url_for('updateProduct', seller_id=curr_seller.id, product_id=product.modelNum) }}" , method="GET">
+                    <input class="modify-product-icon" type="image" src="{{ url_for('static',filename='images/edit-icon.png') }}" />
+                </form>
+
+                <div class="seller-product-desc">{{product.productDescription}}</div>
+                <div class="seller-product-quantity">Qty: {{product.stockLeft}}</div>
+            </div>
+        
+            <div class="seller-product-actions">
+                <form action="{{url_for('deleteProduct', seller_id=curr_seller.id, product_id=product.modelNum) }}" ,
+                    method="POST">
+                    <input class="product-icon" type="image" src="{{ url_for('static',filename='images/trash-icon.png') }}" />
+                </form>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% endblock content %}

@@ -1,0 +1,35 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/seller-profile.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_seller-nav.html" import seller_nav %}
+    {{seller_nav(current_user.name, "seller-nav-row", "seller-nav-row-selected")}}
+
+    <div class="seller-main">
+        <div class="seller-title">Selling History</div>
+        <div class="products-description">
+            These are all of your products that have been sold.
+        </div>
+
+        <div class="products-description">
+            Click the arrow for each product to see a breakdown of which buyers bought that product.
+        </div>
+        {% for product in sold_products %}
+            <div class="seller-product-row" onclick="window.location.href='product/{{product.modelNum}}';">
+                <div class="seller-product-info">
+                    <div class="seller-product-name"> {{product.productName}} </div>
+                    <div class="seller-product-quantity"> Num Sold: {{product.numSold}} </div>
+                </div>
+
+                <div class="seller-product-actions">
+                    <form action="{{url_for('seller_history_product', model_num=product.modelNum) }}" , method="POST">
+                        <input class="product-icon" type="image"
+                            src="{{ url_for('static',filename='images/right-arrow.png') }}" />
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

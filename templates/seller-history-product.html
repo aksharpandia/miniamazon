@@ -1,0 +1,36 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/seller-profile.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_seller-nav.html" import seller_nav %}
+    {{seller_nav(current_user.name, "seller-nav-row", "seller-nav-row-selected")}}
+    <div class="seller-main">
+        <div class="seller-title">
+            {{ curr_product.productName }}
+        </div>
+
+        <div class="products-description">
+            These are the buyers who have bought this product.
+        </div>
+
+        <table>
+            <thead>
+                <th>Item ID</th>
+                <th>Buyer Name</th>
+                <th>Date Bought</th>
+            </thead>
+            <tbody>
+                {% for item in sold_items %}
+                <tr>
+                    <td> {{item.itemID}} </td>
+                    <td> {{item.name}} </td>
+                    <td> {{item.createdDateTime}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+{% endblock content %}

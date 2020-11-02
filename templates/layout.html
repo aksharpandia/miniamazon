@@ -18,7 +18,7 @@
         {% endif %}
 
         {% if current_user.type == 'seller' %}
-        <li class="nav-element"><a href="/seller/{{ current_user.id}}">Seller Profile</a></li>
+        <li class="nav-element"><a href="/seller">Seller Profile</a></li>
         {% endif %}
 
         <li class="nav-element"><a href="/product">Products</a></li>
@@ -52,9 +52,7 @@
         {% endif %}
     {% endwith %}
     
-    <div class='main-page'>
     {% block content %}
     {% endblock %}
-    </div>
 </body>
 </html>

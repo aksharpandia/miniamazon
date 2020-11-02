@@ -1,0 +1,36 @@
+.seller-nav-bar {
+    width: 20%;
+    border-right: 1px solid #C4C4C4;
+    position: fixed;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-nav-row {
+    line-height: 30px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.seller-nav-row-selected {
+    background-color: #C4C4C4;
+}
+
+.seller-nav-row-text {
+    font-size: 18px;
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: middle;
+    text-decoration: none;
+    color: black;
+}
+
+.seller-name {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 80px;
+}
+

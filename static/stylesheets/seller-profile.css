@@ -47,14 +47,14 @@
     display: inline-block;
     vertical-align: middle;
     margin-left: 5px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .add-product-section {
     margin-bottom: 10px;
 }
 
-.delete-product-icon {
+.product-icon {
     width: 20px;
     height: 20px;
     vertical-align: middle;
@@ -71,11 +71,17 @@
 }
 
 .all-products-title {
-    font-size: 35px;
+    font-size: 25px;
     font-weight: bold; 
+    margin-top: 20px;
 }
 
-.products-update-description {
+.products-description {
     font-size: 16px;
     color: #9E9B9B;
+}
+
+.seller-main {
+    margin-left: 20%;
+    padding: 20px;
 }
