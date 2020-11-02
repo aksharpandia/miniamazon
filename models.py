@@ -166,7 +166,7 @@ class Order(db.Model):
         return f"Order('{self.orderID}','{self.transacAmount}')"
 
 class ItemsInOrder(db.Model):
-    __tablename__ = "ItemsInOrder"
+    __tablename__ = "ItemsIn"
 
     orderID = db.Column(db.Integer, db.ForeignKey('order.orderID'), primary_key=True)
     itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
