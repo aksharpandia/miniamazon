@@ -83,3 +83,7 @@ class LogInForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class AddBalanceForm(FlaskForm):
+    newbalance = FloatField('Add To Balance By', validators=[InputRequired()])
+    submit = SubmitField('Add Balance')

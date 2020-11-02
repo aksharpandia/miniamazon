@@ -1,0 +1,20 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/specific-buyer.css') }}">
+</head>
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="buyer-info-header">
+        <div class="buyer-name">{{curr_buyer.name}}</div>
+        <div class="buyer-email">{{curr_buyer.email}}</div>
+        <div class="buyer-shippingAddress">{{curr_buyer.shippingAddress}}</div>
+        <div class="buyer-billingAddress">{{curr_buyer.billingAddress}}</div>
+        <td> 
+                <a href="/buyer/{{curr_buyer.buyerID}}/addBalance">
+                    <div class="buyer-balance">{{curr_buyer.balance}}</div>
+                </a>
+        </td>
+        <p class="buyer-photo"><img src="{{ url_for('static',filename='images/{{buyer-name}}.png') }}" height="25%" width="auto" border="1px"></p>
+    </div>
+{% endblock content %}
+    

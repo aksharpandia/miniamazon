@@ -20,7 +20,11 @@
         <tbody>
             {% for buyer in buyers %}
             <tr>
-                <td> {{buyer.name}}</td>
+                <td> 
+                        <a href="/buyer/{{buyer.buyerID}}">
+                            {{buyer.name}}
+                        </a>
+                </td>
                 <td> {{buyer.email}}</td>
                 <td> {{buyer.balance}}</td>
                 <td> {{buyer.shippingAddress}}</td>
