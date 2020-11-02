@@ -28,13 +28,11 @@
         <li class="nav-element"><a href="/cart">Carts</a></li>
         <li class="nav-element"><a href="/order">Orders</a></li>
         <li class="nav-element"><a href="/reviews">Reviews</a></li>
-        
+
         {% from "_formhelpers.html" import render_field %}
         <li class="nav-element">
-            <form method="POST">
-                <dl>
-                    {{render_field(form.search)}}
-                </dl>
+            <form action="{{url_for('searchResults')}}", method="POST">
+                <input name="search">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </li>

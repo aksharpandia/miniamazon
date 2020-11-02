@@ -38,24 +38,25 @@ def load_user(user_id):
 def main():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(form)
     
     return render_template('index.html',
     curr_product=Product.query.all()[0],
     products=Product.query.all(), form=form)
 
-@app.route('/search-results')
-def search_results(search):
+@app.route('/search-results', methods=['GET', 'POST'])
+def searchResults():
     results = []
-    search_string = search.data['search']
-    if search.data['search'] == '':
-        results = db_session.query.all()
+    search_string = request.form['search']
+    if search_string != '':
+        results = Product.query.filter(Product.productName.contains(search_string)) # this is case sensitive
     if not results:
         flash('No results found!')
         return redirect('/')
     else:
         # display results
-        return render_template('search-results.html', results=results)
+        return render_template('search-results.html', 
+            results=results)
 
 def create_user_cart(userID, type, new=False):
     if type != "buyer":
@@ -74,7 +75,7 @@ def create_user_cart(userID, type, new=False):
 def seller_id(seller_id):
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
 
     return render_template('seller-product.html', 
         curr_seller=User.query.filter(User.id == seller_id).one(), 
@@ -88,7 +89,7 @@ def buyer():
 def product():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
 
     return render_template('product.html', products=Product.query.all(), form=form)
 
@@ -96,7 +97,7 @@ def product():
 def product_id(model_num):
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
 
     return render_template('specific-product.html', 
         curr_product=Product.query.filter(Product.modelNum == model_num).first(),
@@ -205,7 +206,7 @@ def fillOutProductFields(product, form):
 def item():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
 
     return render_template('item.html', items=Item.query.all(), form=form)
 
@@ -213,14 +214,14 @@ def item():
 def category():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
     return render_template('category.html', categories=Category.query.all(), form=form)
 
 @app.route('/cart')
 def cart():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
     return render_template('cart.html', carts=Cart.query.all(), form=form)
 
 @app.route('/cart/<cart_cartID>')
@@ -235,14 +236,14 @@ def cart_id(cart_cartID):
 def order():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
     return render_template('order.html', orders=Order.query.all(), form=form)
 
 @app.route('/reviews')
 def reviews():
     form = SearchForm()
     if request.method == 'POST':
-        return search_results(search)
+        return searchResults(search)
     return render_template('reviews.html', reviews=Reviews.query.all(), form=form)    
 
 @app.route('/add-reviews', methods=['GET', 'POST'])

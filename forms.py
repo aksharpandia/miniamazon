@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationEr
 from models import *
 
 class SearchForm(FlaskForm):
-    search = StringField('', [DataRequired()])
+    search = StringField('search', [DataRequired()])
 #   submit = SubmitField('Search', render_kw={'class': 'btn btn-success btn-block'})
 
 class AddProductForm(FlaskForm):
