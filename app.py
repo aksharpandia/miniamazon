@@ -36,7 +36,9 @@ def load_user(user_id):
 @app.route('/')
 @login_required
 def main():
-    return render_template('index.html')
+    return render_template('index.html',
+    curr_product=Product.query.all()[0],
+    products=Product.query.all())
 
 def create_user_cart(userID, type, new=False):
     if type != "buyer":
