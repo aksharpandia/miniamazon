@@ -6,7 +6,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "user"
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(60))
     type = db.Column(db.String(120))
@@ -203,7 +203,7 @@ class Seller(db.Model):
     __tablename__ = "seller"
 
     sellerID = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
 
     def __init__(self, sellerID, name, email):
@@ -222,7 +222,7 @@ class Buyer(db.Model):
     shippingAddress = db.Column(db.String(120))
     billingAddress = db.Column(db.String(120))
     photo = db.Column(db.String(120))
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
 
     def __init__(self, buyerID, balance, shippingAddress, billingAddress, photo, name, email):
