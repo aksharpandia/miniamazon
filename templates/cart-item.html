@@ -5,19 +5,30 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="user-table-title">These are the items in {{curr_buyer.name}}'s cart (cartID: {{curr_cart.cartID}}).</div>
+
     <table>
         <thead>
-            <th>Item ID</th>
+            <th>Product Name</th>
+            <th>Model Number</th>
+            <th>Seller ID</th>
+            <th>Quantity in Cart</th>
+            <th>Price</th>
         </thead>
 
         <tbody>
-            {% for item in items %}
+            {% for productName, modelNum, userID, quantity, price in products %}
             <tr>
-                <td>{{item.itemID}}</td>
+                <td>{{productName}}</td>
+                <td>{{modelNum}}</td>
+                <td>{{userID}}</td>
+                <td>{{quantity}}</td>
+                <td>{{price}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    The total price of your order is ${{total_price}}.
+
     <form action="{{url_for('createOrder', cart_id=curr_cart.cartID)}}"
     method="POST" id="createOrder/{{curr_cart.cartID}}">
     </form>
