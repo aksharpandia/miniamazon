@@ -8,16 +8,39 @@
     <table>
         <thead>
             <th>Item ID</th>
+            <th>Model Number</th>
+            <th>Sold By</th>
         </thead>
 
         <tbody>
-            {% for item in items %}
+            {% for item, modelNum, userID in items %}
             <tr>
-                <td>{{item.itemID}}</td>
+                <td>{{item}}</td>
+                <td>{{modelNum}}</td>
+                <td>{{userID}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <table>
+        <thead>
+            <th>Model Number</th>
+            <th>Sold By</th>
+            <th>Quantity in Cart</th>
+        </thead>
+
+        <tbody>
+            {% for modelNum, userID, quantity in products %}
+            <tr>
+                <td>{{modelNum}}</td>
+                <td>{{userID}}</td>
+                <td>{{quantity}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <form action="{{url_for('createOrder', cart_id=curr_cart.cartID)}}"
     method="POST" id="createOrder/{{curr_cart.cartID}}">
     </form>
