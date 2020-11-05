@@ -39,13 +39,27 @@ def main():
     form = SearchForm()
     if request.method == 'POST':
         return searchResults(form)
-    
+
     return render_template('index.html',
     curr_product=Product.query.all()[0],
     products=Product.query.all(),
     mycart = Cart.query.filter(Cart.buyerID == current_user.id).first(),
     recommended=Product.query.filter(Product.modelNum==Reviews.modelNum and Reviews.rating >= 4.0).limit(5).all(),
     form=form)
+
+
+# def join_item_product(cartID):
+#     # return IsPlacedInCart.query.join(Item, Item.itemID == IsPlacedInCart.itemID).\
+#     #     filter(IsPlacedInCart.cartID == cartID)
+
+#     return db.session.query(IsPlacedInCart).filter(IsPlacedInCart.cartID== cartID).\
+#     join(Item, Item.itemID == IsPlacedInCart.itemID).all()
+
+#    # return db.session.query(IsPlacedInCart, Item).filter
+
+#     # db.session.query(Product.productName, Product.modelNum, db.func.count(Item.isSold).label("numSold")).join(Item, Product.modelNum == Item.modelNum)
+#     #     .filter(Item.isSold.is_(True), Product.userID == current_user.id).group_by(Product.modelNum, Product.productName).all())
+    
 
 @app.route('/search-results', methods=['GET', 'POST'])
 def searchResults():
@@ -316,9 +330,18 @@ def cart():
 def cart_id(cart_cartID):
     curr_cart = Cart.query.filter(Cart.cartID == cart_cartID).one()
     curr_buyer = User.query.filter(User.id == curr_cart.buyerID).one()
+
+    itemsincart = db.session.query(IsPlacedInCart.itemID, Item.modelNum, Item.userID).\
+        join(Item).filter(IsPlacedInCart.cartID==curr_cart.cartID).all()
+
+    productsincart = db.session.query(Item.modelNum, Item.userID, 
+        db.func.count(IsPlacedInCart.itemID)).\
+        join(IsPlacedInCart).filter(IsPlacedInCart.cartID==curr_cart.cartID).\
+        group_by(Item.modelNum, Item.userID).all()
+
     return render_template('cart-item.html',
         curr_cart = curr_cart, curr_buyer = curr_buyer,
-        items = IsPlacedInCart.query.filter(IsPlacedInCart.cartID == cart_cartID))
+        items = itemsincart, products=productsincart)
 
 @app.route('/order')
 def order():

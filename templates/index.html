@@ -22,6 +22,9 @@
                     method="POST" id="updatecart/{{rec.modelNum}}/{{rec.userID}}">
                     </form>
                     <button type="submit" form="updatecart/{{rec.modelNum}}/{{rec.userID}}">Add to Cart </button>
+                    {% if rec.stockLeft < 5 %}
+                    <div class="quantity-left"> Only {{rec.stockLeft}} left!</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -46,6 +49,9 @@
                 method="POST" id="updatecart/{{product.modelNum}}/{{product.userID}}">
                 </form>
                 <button type="submit" form="updatecart/{{product.modelNum}}/{{product.userID}}">Add to Cart </button>
+                {% if product.stockLeft < 5 %}
+                <div class="quantity-left"> Only {{product.stockLeft}} left!</div>
+                {% endif %}
             </div>
         </div>
     </div>
