@@ -18,7 +18,10 @@
                     <div class="seller-product-name">{{rec.productName}}</div>
                     <div class="seller-product-price">$ {{rec.price}}</div>
                     <a href="/product/{{rec.modelNum}}">View Product</a><br>
-                    <a href="">Add to Cart</a>
+                    <form action="{{url_for('updateCart', cart_id=mycart.cartID, model_num = rec.modelNum, user_id = rec.userID)}}"
+                    method="POST" id="updatecart/{{rec.modelNum}}/{{rec.userID}}">
+                    </form>
+                    <button type="submit" form="updatecart/{{rec.modelNum}}/{{rec.userID}}">Add to Cart </button>
                 </div>
             </div>
         </div>
@@ -39,12 +42,10 @@
                 <div class="seller-product-desc">{{product.productDescription}}</div>
                 <div class="seller-product-price">$ {{product.price}}</div>
                 <a href="/product/{{product.modelNum}}">View Product</a><br>
-                <a href="/cart/{{mycart.cartID}}">
-                    <form action="{{url_for('updateCart', cart_id=mycart.cartID, model_num = product.modelNum, user_id = product.userID)}}"
-                    method="POST" id="updatecart/{{product.modelNum}}/{{product.userID}}">
-                    </form>
-                    <button type="submit" form="updatecart/{{product.modelNum}}/{{product.userID}}">Add to Cart </button>
-                </a>
+                <form action="{{url_for('updateCart', cart_id=mycart.cartID, model_num = product.modelNum, user_id = product.userID)}}"
+                method="POST" id="updatecart/{{product.modelNum}}/{{product.userID}}">
+                </form>
+                <button type="submit" form="updatecart/{{product.modelNum}}/{{product.userID}}">Add to Cart </button>
             </div>
         </div>
     </div>
