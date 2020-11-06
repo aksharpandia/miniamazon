@@ -241,8 +241,8 @@ def deleteProduct(seller_id, product_id):
 @app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
 def updateCart(cart_id, model_num, user_id):
     if request.method == 'POST':
-        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
-            filter(IsPlacedInCart.cartID == cart_id).all()]
+        # Same item can't be added to different users' carts
+        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).all()]
         itemtoadd = Item.query.filter(Item.modelNum == model_num, 
             Item.userID == user_id,
             Item.isSold == False,
@@ -262,14 +262,24 @@ def updateCart(cart_id, model_num, user_id):
 def createOrder(cart_id):
     if request.method == 'POST':
         orderID = randint(0,999999)
-        newOrder = Order(orderID, current_user.id, 100, 'express', "10-01-2020")
+        total_price = find_price_of_cart(cart_id)
+        newOrder = Order(orderID, current_user.id, total_price, 'express', "10-01-2020")
         db.session.add(newOrder)
         db.session.commit()
         itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
             filter(IsPlacedInCart.cartID == cart_id).all()]
+        productsincart = find_products_in_cart(cart_id)
+
         for itemID in itemsincart:
             add_item_to_order(orderID, itemID)
             delete_item_from_cart(itemID, cart_id)
+            change_isSold_flag(itemID)
+
+        for entry in productsincart:
+            change_product_quantity(entry)
+
+        change_buyer_balance(total_price, cart_id)
+            
         flash(
             f'You successfully created Order {newOrder.orderID}!', 'success')
         return redirect('/order')
@@ -283,6 +293,29 @@ def delete_item_from_cart(itemID, cart_id):
     itemtodel = IsPlacedInCart.query.filter(IsPlacedInCart.itemID == itemID,
         IsPlacedInCart.cartID == cart_id).first()
     db.session.delete(itemtodel)
+    db.session.commit()
+
+def change_isSold_flag(itemID):
+    for item in db.session.query(Item).filter(Item.itemID == itemID):
+        item.isSold = True
+        db.session.add(item)
+        db.session.commit()
+
+def change_buyer_balance(total_price, cart_id):
+    buyer_to_edit = db.session.query(Buyer).\
+        join(Cart, Cart.buyerID==Buyer.buyerID).filter(Cart.cartID == cart_id).first()
+    buyer_to_edit.balance = round(buyer_to_edit.balance - total_price, 2)
+    db.session.add(buyer_to_edit)
+    db.session.commit()
+
+def change_product_quantity(entry):
+    modelNum = entry[1]
+    userID = entry[2]
+    quantity = entry[3]
+    product_to_edit = db.session.query(Product).filter(Product.modelNum == modelNum,
+        Product.userID == userID).first()
+    product_to_edit.stockLeft = product_to_edit.stockLeft - quantity
+    db.session.add(product_to_edit)
     db.session.commit()
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
@@ -336,7 +369,7 @@ def cart_id(cart_cartID):
     curr_cart = Cart.query.filter(Cart.cartID == cart_cartID).one()
     curr_buyer = User.query.filter(User.id == curr_cart.buyerID).one()
 
-    # Returns on per product basis (Model Number, Product Name, Sold By, Quantity in cart, Price per unit)
+    # Returns on per product basis (Product Name, Model Number, Sold By, Quantity in cart, Price per unit)
     productsincart = find_products_in_cart(cart_cartID)
     total_price = find_price_of_cart(cart_cartID)
 
@@ -346,7 +379,7 @@ def cart_id(cart_cartID):
         total_price = total_price)
 
 def find_products_in_cart(cartID):
-    # Model Numbner, Product Name, Sold By (user id), Quantity, Price per unit
+    # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
     return db.session.query(db.func.min(Product.productName), Item.modelNum,
         Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
