@@ -237,12 +237,23 @@ def deleteProduct(seller_id, product_id):
             f'You successfully deleted {prodToDelete.productName}!', 'success')
         return redirect('/seller')
 
+@app.route('/delete_product_from_cart/<model_num>/<user_id>/<cart_id>', methods=['GET', 'POST'])
+def delete_product_from_cart(model_num, user_id, cart_id):
+    itemstodel = db.session.query(IsPlacedInCart).\
+        join(Item, Item.itemID == IsPlacedInCart.itemID).\
+        filter(Item.modelNum == model_num, Item.userID == user_id).all()
+    for itemtodel in itemstodel:
+        db.session.delete(itemtodel)
+        db.session.commit()
+    flash(
+        f'You successfully deleted this product (Model Number: ' + model_num + ') from your cart', 'success')
+    return redirect('/cart/' + cart_id)
 
 @app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
 def updateCart(cart_id, model_num, user_id):
     if request.method == 'POST':
-        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
-            filter(IsPlacedInCart.cartID == cart_id).all()]
+        # Same item can't be added to different users' carts
+        itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).all()]
         itemtoadd = Item.query.filter(Item.modelNum == model_num, 
             Item.userID == user_id,
             Item.isSold == False,
@@ -262,23 +273,61 @@ def updateCart(cart_id, model_num, user_id):
 def createOrder(cart_id):
     if request.method == 'POST':
         orderID = randint(0,999999)
-        newOrder = Order(orderID, current_user.id, 100, 'express', "10-01-2020")
+        total_price = find_price_of_cart(cart_id)
+        newOrder = Order(orderID, current_user.id, total_price, 'express', "10-01-2020")
         db.session.add(newOrder)
         db.session.commit()
         itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
             filter(IsPlacedInCart.cartID == cart_id).all()]
+        productsincart = find_products_in_cart(cart_id)
+
         for itemID in itemsincart:
-            newItemsInOrder = ItemsInOrder(orderID, itemID)
-            db.session.add(newItemsInOrder)
-            db.session.commit()
-            itemtodel = IsPlacedInCart.query.filter(IsPlacedInCart.itemID == itemID,
-                IsPlacedInCart.cartID == cart_id).first()
-            db.session.delete(itemtodel)
-            db.session.commit()
+            add_item_to_order(orderID, itemID)
+            delete_item_from_cart(itemID, cart_id)
+            change_isSold_flag(itemID)
+
+        for entry in productsincart:
+            change_product_quantity(entry)
+
+        change_buyer_balance(total_price, cart_id)
+            
         flash(
-            f'You successfully created {newOrder.orderID}!', 'success')
+            f'You successfully created Order {newOrder.orderID}!', 'success')
         return redirect('/order')
 
+def add_item_to_order(orderID, itemID):
+    newItemsInOrder = ItemsInOrder(orderID, itemID)
+    db.session.add(newItemsInOrder)
+    db.session.commit()
+
+def delete_item_from_cart(itemID, cart_id):
+    itemtodel = IsPlacedInCart.query.filter(IsPlacedInCart.itemID == itemID,
+        IsPlacedInCart.cartID == cart_id).first()
+    db.session.delete(itemtodel)
+    db.session.commit()
+
+def change_isSold_flag(itemID):
+    for item in db.session.query(Item).filter(Item.itemID == itemID):
+        item.isSold = True
+        db.session.add(item)
+        db.session.commit()
+
+def change_buyer_balance(total_price, cart_id):
+    buyer_to_edit = db.session.query(Buyer).\
+        join(Cart, Cart.buyerID==Buyer.buyerID).filter(Cart.cartID == cart_id).first()
+    buyer_to_edit.balance = round(buyer_to_edit.balance - total_price, 2)
+    db.session.add(buyer_to_edit)
+    db.session.commit()
+
+def change_product_quantity(entry):
+    modelNum = entry[1]
+    userID = entry[2]
+    quantity = entry[3]
+    product_to_edit = db.session.query(Product).filter(Product.modelNum == modelNum,
+        Product.userID == userID).first()
+    product_to_edit.stockLeft = product_to_edit.stockLeft - quantity
+    db.session.add(product_to_edit)
+    db.session.commit()
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
 def updateProduct(seller_id, product_id):
@@ -293,7 +342,6 @@ def updateProduct(seller_id, product_id):
     elif request.method == 'GET':
         fillOutProductFields(prodToUpdate, form)
     return render_template('add-product.html', title='Update Your Product', form=form)
-
 
 def fillOutProductFields(product, form):
     form.productName.data = product.productName 
@@ -331,32 +379,61 @@ def cart_id(cart_cartID):
     curr_cart = Cart.query.filter(Cart.cartID == cart_cartID).one()
     curr_buyer = User.query.filter(User.id == curr_cart.buyerID).one()
 
-    # Returns on per product basis (Model Number, Product Name, Sold By, Quantity in cart, Price per unit)
-    productsincart = db.session.query(db.func.min(Product.productName), Item.modelNum,
-        Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
-        join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
-        join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
-        filter(IsPlacedInCart.cartID==curr_cart.cartID).\
-        group_by(Item.modelNum, Item.userID).all()
-
-    # Find total price of cart
-    total_price = db.session.query(db.func.sum(Product.price)).\
-        join(Item, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
-        join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
-        filter(IsPlacedInCart.cartID==curr_cart.cartID).all()
-    total_price = total_price[0][0] #some weird SQL thing
+    # Returns on per product basis (Product Name, Model Number, Sold By, Quantity in cart, Price per unit)
+    productsincart = find_products_in_cart(cart_cartID)
+    total_price = find_price_of_cart(cart_cartID)
 
     return render_template('cart-item.html',
         curr_cart = curr_cart, curr_buyer = curr_buyer,
         products=productsincart,
         total_price = total_price)
 
+def find_products_in_cart(cartID):
+    # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
+    return db.session.query(db.func.min(Product.productName), Item.modelNum,
+        Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
+        join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
+        join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
+        filter(IsPlacedInCart.cartID==cartID).\
+        group_by(Item.modelNum, Item.userID).all()
+
+def find_price_of_cart(cartID):
+    total_price = db.session.query(db.func.sum(Product.price)).\
+        join(Item, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
+        join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
+        filter(IsPlacedInCart.cartID==cartID).all()
+    total_price = total_price[0][0] #some weird SQL thing
+    if total_price == None:
+        total_price = 0
+    return total_price
+
 @app.route('/order')
 def order():
     form = SearchForm()
     if request.method == 'POST':
         return searchResults(search)
-    return render_template('order.html', orders=Order.query.all(), form=form)
+    return render_template('order.html', orders=Order.query.filter(Order.buyerID==current_user.id).all(), form=form)
+
+@app.route('/order/<order_id>')
+def order_id(order_id):
+    curr_order = Order.query.filter(Order.orderID == order_id).one()
+    curr_buyer = User.query.filter(User.id == curr_order.buyerID).one()
+    productsinorder = find_products_in_order(order_id)
+
+    return render_template('order-item.html',
+        curr_order = curr_order, curr_buyer = curr_buyer,
+        products=productsinorder,
+        total_price = curr_order.transacAmount)
+
+def find_products_in_order(orderID):
+    # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
+    return db.session.query(db.func.min(Product.productName), Item.modelNum,
+        Item.userID, db.func.count(ItemsInOrder.itemID), db.func.min(Product.price)).\
+        join(ItemsInOrder, ItemsInOrder.itemID == Item.itemID).\
+        join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
+        filter(ItemsInOrder.orderID == orderID).\
+        group_by(Item.modelNum, Item.userID).all()
+
 
 @app.route('/reviews')
 def reviews():

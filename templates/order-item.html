@@ -4,7 +4,7 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <div class="user-table-title">These are the items in {{curr_buyer.name}}'s cart (cartID: {{curr_cart.cartID}}).</div>
+    <div class="user-table-title">These are the items in {{curr_buyer.name}}'s order (OrderID: {{curr_order.orderID}}).</div>
 
     <table>
         <thead>
@@ -13,7 +13,6 @@
             <th>Seller ID</th>
             <th>Quantity in Cart</th>
             <th>Price</th>
-            <th>Delete</th>
         </thead>
 
         <tbody>
@@ -24,21 +23,10 @@
                 <td>{{userID}}</td>
                 <td>{{quantity}}</td>
                 <td>{{price}}</td>
-                <td> 
-                <form action="{{url_for('delete_product_from_cart', model_num=modelNum, user_id=userID, cart_id=curr_cart.cartID)}}" ,
-                    method="POST">
-                    <input class="product-icon" type="image" src="{{ url_for('static',filename='images/trash-icon.png') }}" />
-                </form>
-                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     The total price of your order is ${{total_price}}.
 
-    <form action="{{url_for('createOrder', cart_id=curr_cart.cartID)}}"
-    method="POST" id="createOrder/{{curr_cart.cartID}}">
-    </form>
-    <button type="submit" form="createOrder/{{curr_cart.cartID}}">Create Order </button>
-    <br><br>
 {% endblock content %}
