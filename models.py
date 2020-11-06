@@ -36,9 +36,9 @@ class User(db.Model, UserMixin):
 class Product(db.Model):
     __tablename__ = "product"
 
-    modelNum = db.Column(db.Integer, primary_key=True)
+    modelNum = db.Column(db.Text(), primary_key=True)
     userID = db.Column(db.Integer, db.ForeignKey('seller.sellerID'), primary_key=True) # will have to check that user ID is a seller ID
-    productDescription = db.Column(db.String(120)) # text for longer string inputs?
+    productDescription = db.Column(db.Text()) # text for longer string inputs?
     productImage = db.Column(db.String(120)) # image but image files are stored in file system, this is the path to that
     productName = db.Column(db.String(120), nullable=False)
     stockLeft = db.Column(db.Integer, nullable=False)

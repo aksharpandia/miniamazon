@@ -72,9 +72,9 @@ def process_seller_row(data, line):
         for seller in sellers:
             process_single_seller(seller, data, line)
     else:
-        process_single_seller(sellers)
+        process_single_seller(sellers, data, line)
 
-def process_single_seller(seller):
+def process_single_seller(seller, data, line):
     print('---- new seller ----')
     seller_price = 0.00
     seller_name = ''
@@ -102,12 +102,15 @@ def process_single_seller(seller):
     model_number = data.iloc[line]['uniq_id'].strip()
     raw_description = str(data.iloc[line]['product_description'])
     raw_info = str(data.iloc[line]['product_information'])
-    product_des = (raw_description + '\n \n' + raw_info)
-    product_description = unicodedata2.normalize("NFKD", product_des)
+    product_description = (raw_description + '\n \n' + raw_info)
+    # product_description = unicodedata2.normalize("NFKD", product_des)
     product_name = data.iloc[line]['product_name'].strip()
     product_image = 'img1.jpg'
-    stock = data.iloc[line]['number_available_in_stock'].split('\xa0new')
-    stock_left = stock[0]
+    stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0new')
+    if (stock[0] != stock[0]):
+        stock_left = int(stock[0])
+    else:
+        stock_left = 0
     raw_rating = data.iloc[line]['average_review_rating']
     rating = 0.0
     if raw_rating == raw_rating: #checking for NaN, any NaNs are not equal to self
@@ -116,10 +119,11 @@ def process_single_seller(seller):
         is_recommended = True
     else:
         is_recommended = False 
+    price = float(seller_price[1:])
     product_count+=1
     # create product 
     product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
-    stock_left, is_recommended, seller_price)
+    stock_left, is_recommended, price)
     db.session.add(product)
 
 clean_data('amazon_co-ecommerce_sample.csv')
