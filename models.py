@@ -165,21 +165,23 @@ class ItemsInOrder(db.Model):
 
 class Reviews(db.Model):
     __tablename__ = "Reviews"
-    reviewsID = db.Column(db.Integer, primary_key=True)
-    rating = db.Column(db.Integer, nullable=False)
+    reviewsID=db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Float, nullable=False)
+    headline = db.Column(db.String(120))
     commentary = db.Column(db.String(120))
     dateReviewed = db.Column(db.String(60))
     userID= db.Column(db.Integer, db.ForeignKey('buyer.buyerID'))
     modelNum = db.Column(db.Integer)
-    def __init__(self, reviewsID, rating, commentary, dateReviewed, userID, modelNum):
+    def __init__(self, reviewsID, rating, headline, commentary, dateReviewed, userID, modelNum):
         self.reviewsID = reviewsID
         self.rating = rating   
+        self.headline = headline
         self.commentary = commentary 
         self.dateReviewed = dateReviewed
         self.userID = userID
         self.modelNum = modelNum
     def __repr__(self):
-        return f"Reviews('{self.reviewsID}', '{self.rating}', '{self.commentary}', '{self.dateReviewed}', '{self.userID}', '{self.modelNum}')"
+        return f"Reviews('{self.reviewsID}', '{self.rating}', '{self.headline}', '{self.commentary}', '{self.dateReviewed}', '{self.userID}', '{self.modelNum}')"
 
 class Seller(db.Model):
     __tablename__ = "seller"
