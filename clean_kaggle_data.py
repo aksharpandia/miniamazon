@@ -70,7 +70,7 @@ def process_seller_row(data, line):
     sellers = json_sellers['seller']
     if has_multiple_sellers:
         for seller in sellers:
-            process_single_seller(seller)
+            process_single_seller(seller, data, line)
     else:
         process_single_seller(sellers)
 
@@ -95,6 +95,31 @@ def process_single_seller(seller):
     db.session.add(seller)
     db.session.commit()
 
-    # will need to create product here
+    # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
+    # productName ('product_name'), productImage (PLACEHOLDER for now)
+    # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
+    product_count = 0
+    model_number = data.iloc[line]['uniq_id'].strip()
+    raw_description = str(data.iloc[line]['product_description'])
+    raw_info = str(data.iloc[line]['product_information'])
+    product_des = (raw_description + '\n \n' + raw_info)
+    product_description = unicodedata2.normalize("NFKD", product_des)
+    product_name = data.iloc[line]['product_name'].strip()
+    product_image = 'img1.jpg'
+    stock = data.iloc[line]['number_available_in_stock'].split('\xa0new')
+    stock_left = stock[0]
+    raw_rating = data.iloc[line]['average_review_rating']
+    rating = 0.0
+    if raw_rating == raw_rating: #checking for NaN, any NaNs are not equal to self
+        rating = float(raw_rating[0:3]) 
+    if (rating >= 4.0):
+        is_recommended = True
+    else:
+        is_recommended = False 
+    product_count+=1
+    # create product 
+    product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
+    stock_left, is_recommended, seller_price)
+    db.session.add(product)
 
 clean_data('amazon_co-ecommerce_sample.csv')
