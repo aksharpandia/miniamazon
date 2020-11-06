@@ -72,6 +72,7 @@ class AddOrderForm(FlaskForm):
 class AddReviewsForm(FlaskForm):
     reviewsID = IntegerField('ID of Review', validators=[InputRequired()])
     rating = IntegerField('Rating', validators=[InputRequired()])    
+    commentary = StringField('Headline for your review', validators=[InputRequired()])  
     commentary = StringField('Your feedback', validators=[InputRequired()])  
     dateReviewed = StringField('Date Today', validators=[InputRequired()])
     userID = IntegerField('Your User ID', validators=[InputRequired()])

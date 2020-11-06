@@ -275,8 +275,12 @@ def reviews():
 def addReviews():
     form = AddReviewsForm()
     if request.method=='POST': # need to validate form
-        reviews = Reviews(form.reviewsID.data, form.rating.data, form.commentary.data, form.dateReviewed.data, form.userID.data, form.modelNum.data)
-        save_reviews_add(reviews, form, new=True)        
+        reviews = Reviews(form.reviewsID.data, form.rating.data, form.headline.data, form.commentary.data, form.dateReviewed.data, form.userID.data, form.modelNum.data)
+        exists = bool(db.session.query(Product).filter_by(modelNum=form.modelNum.data).first()) #checking if model num exists in product table
+        if exists: 
+            save_reviews_add(reviews, form, new=True)  
+        else:
+            return "Model num does not exist"      
         flash(f'You successfully created a review with rating {form.rating.data}! Thanks for your feedback.', 'success')
         return redirect(url_for('reviews')) # redirect to product page so they can see the updated table
     return render_template('add-reviews.html', title='Create a review for your product', form=form)
@@ -290,6 +294,7 @@ def save_reviews_add(reviews, form, new=False):
     # data from the user input
     reviews.reviewsID = form.reviewsID.data
     reviews.rating = form.rating.data
+    reviews.headline = form.headline.data
     reviews.commentary = form.commentary.data
     reviews.dateReviewed = form.dateReviewed.data 
     reviews.userID = form.userID.data
