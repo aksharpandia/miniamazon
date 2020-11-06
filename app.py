@@ -413,7 +413,28 @@ def order():
     form = SearchForm()
     if request.method == 'POST':
         return searchResults(search)
-    return render_template('order.html', orders=Order.query.all(), form=form)
+    return render_template('order.html', orders=Order.query.filter(Order.buyerID==current_user.id).all(), form=form)
+
+@app.route('/order/<order_id>')
+def order_id(order_id):
+    curr_order = Order.query.filter(Order.orderID == order_id).one()
+    curr_buyer = User.query.filter(User.id == curr_order.buyerID).one()
+    productsinorder = find_products_in_order(order_id)
+
+    return render_template('order-item.html',
+        curr_order = curr_order, curr_buyer = curr_buyer,
+        products=productsinorder,
+        total_price = curr_order.transacAmount)
+
+def find_products_in_order(orderID):
+    # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
+    return db.session.query(db.func.min(Product.productName), Item.modelNum,
+        Item.userID, db.func.count(ItemsInOrder.itemID), db.func.min(Product.price)).\
+        join(ItemsInOrder, ItemsInOrder.itemID == Item.itemID).\
+        join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
+        filter(ItemsInOrder.orderID == orderID).\
+        group_by(Item.modelNum, Item.userID).all()
+
 
 @app.route('/reviews')
 def reviews():
