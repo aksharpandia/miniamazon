@@ -4,7 +4,7 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <div class="user-table-title">This is the table of test orders.</div>
+    <div class="user-table-title">This is the table of {{current_user.name}}'s previous orders.</div>
     <table>
         <thead>
             <th>Order ID</th>
@@ -17,7 +17,11 @@
         <tbody>
             {% for order in orders %}
             <tr>
-                <td> {{order.orderID}}</td>
+                <td> 
+                    <a href="/order/{{order.orderID}}">
+                        {{order.orderID}}
+                    </a>
+                </td>
                 <td> {{order.buyerID}}</td>
                 <td> {{order.transacAmount}}</td>
                 <td> {{order.deliveryOption}}</td>
