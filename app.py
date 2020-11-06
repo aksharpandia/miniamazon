@@ -237,6 +237,18 @@ def deleteProduct(seller_id, product_id):
             f'You successfully deleted {prodToDelete.productName}!', 'success')
         return redirect('/seller')
 
+@app.route('/delete_item_from_cart/<model_num>/<user_id>/<cart_id>')
+def delete_product_from_cart(model_num, user_id, cart_id):
+    itemstodel = db.session.query(IsPlacedInCart).\
+        join(Item, Item.itemID == IsPlacedInCart.itemID).\
+        filter(Item.modelNum == model_num, Item.userID == user_id).all()
+
+    for itemtodel in itemstodel:
+        db.session.delete(itemtodel)
+        db.session.commit()
+    flash(
+        f'You successfully deleted this product (Model Number: ' + model_num + ') from your cart', 'success')
+    return redirect('/cart/' + cart_id)
 
 @app.route('/updatecart/<cart_id>/<model_num>/<user_id>', methods=['GET', 'POST'])
 def updateCart(cart_id, model_num, user_id):
@@ -331,7 +343,6 @@ def updateProduct(seller_id, product_id):
     elif request.method == 'GET':
         fillOutProductFields(prodToUpdate, form)
     return render_template('add-product.html', title='Update Your Product', form=form)
-
 
 def fillOutProductFields(product, form):
     form.productName.data = product.productName 
