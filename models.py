@@ -6,7 +6,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "user"
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(60))
     type = db.Column(db.String(120))
@@ -102,22 +102,6 @@ class BelongsToCategory(db.Model):
     def __repr__(self):
         return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
 
-# class BelongsToProduct(db.Model):
-#     # relationship set between an item and a product
-#     __tablename__ = "belongstoproduct"
-
-#     modelNum = db.Column(db.Integer)
-#     userID = db.Column(db.Integer)
-#     itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
-
-#     def __init__(self, modelNum, userID, itemID):
-#         self.modelNum = modelNum
-#         self.userID = userID
-#         self.itemID = itemID 
-
-#     def __repr__(self):
-#         return f"BelongsToProduct('{self.modelNum}', '{self.itemID}')"
-
 class Cart(db.Model):
     __tablename__ = "cart"
 
@@ -166,7 +150,7 @@ class Order(db.Model):
         return f"Order('{self.orderID}','{self.transacAmount}')"
 
 class ItemsInOrder(db.Model):
-    __tablename__ = "ItemsInOrder"
+    __tablename__ = "ItemsIn"
 
     orderID = db.Column(db.Integer, db.ForeignKey('order.orderID'), primary_key=True)
     itemID = db.Column(db.Integer, db.ForeignKey('item.itemID'), primary_key=True)
@@ -203,7 +187,7 @@ class Seller(db.Model):
     __tablename__ = "seller"
 
     sellerID = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
 
     def __init__(self, sellerID, name, email):
@@ -222,7 +206,7 @@ class Buyer(db.Model):
     shippingAddress = db.Column(db.String(120))
     billingAddress = db.Column(db.String(120))
     photo = db.Column(db.String(120))
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
 
     def __init__(self, buyerID, balance, shippingAddress, billingAddress, photo, name, email):
