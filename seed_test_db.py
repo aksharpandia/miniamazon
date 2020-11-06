@@ -33,11 +33,11 @@ db.session.add(seller2)
 db.session.commit()
 
 # adding to buyer table - make sure these users exist first
-buyer0 = Buyer(4, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "nathan.jpg", "nathan", "nathan.parikh@duke.edu")
+buyer0 = Buyer(4, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/nathan.png", "nathan", "nathan.parikh@duke.edu")
 db.session.add(buyer0)
-buyer1 = Buyer(5, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "akshar.jpg", "akshar", "akshar.pandia@duke.edu")
+buyer1 = Buyer(5, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", "akshar", "akshar.pandia@duke.edu")
 db.session.add(buyer1)
-buyer2 = Buyer(6, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "anotherBuyer.jpg", "another buyer", "another.buyer@duke.edu")
+buyer2 = Buyer(6, 200.01, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", "another buyer", "another.buyer@duke.edu")
 db.session.add(buyer2)
 
 db.session.commit()
