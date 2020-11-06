@@ -237,12 +237,11 @@ def deleteProduct(seller_id, product_id):
             f'You successfully deleted {prodToDelete.productName}!', 'success')
         return redirect('/seller')
 
-@app.route('/delete_item_from_cart/<model_num>/<user_id>/<cart_id>')
+@app.route('/delete_product_from_cart/<model_num>/<user_id>/<cart_id>', methods=['GET', 'POST'])
 def delete_product_from_cart(model_num, user_id, cart_id):
     itemstodel = db.session.query(IsPlacedInCart).\
         join(Item, Item.itemID == IsPlacedInCart.itemID).\
         filter(Item.modelNum == model_num, Item.userID == user_id).all()
-
     for itemtodel in itemstodel:
         db.session.delete(itemtodel)
         db.session.commit()

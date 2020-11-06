@@ -13,6 +13,7 @@
             <th>Seller ID</th>
             <th>Quantity in Cart</th>
             <th>Price</th>
+            <th>Delete</th>
         </thead>
 
         <tbody>
@@ -23,6 +24,12 @@
                 <td>{{userID}}</td>
                 <td>{{quantity}}</td>
                 <td>{{price}}</td>
+                <td> 
+                <form action="{{url_for('delete_product_from_cart', model_num=modelNum, user_id=userID, cart_id=curr_cart.cartID)}}" ,
+                    method="POST">
+                    <input class="product-icon" type="image" src="{{ url_for('static',filename='images/trash-icon.png') }}" />
+                </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
