@@ -10,11 +10,11 @@
         <div class="buyer-shippingAddress">{{curr_buyer.shippingAddress}}</div>
         <div class="buyer-billingAddress">{{curr_buyer.billingAddress}}</div>
         <td> 
-                <a href="/buyer/{{curr_buyer.buyerID}}/addBalance">
+                <a href="/buyer/addBalance">
                     <div class="buyer-balance">{{curr_buyer.balance}}</div>
                 </a>
         </td>
-        <p class="buyer-photo"><img src="{{ url_for('static',filename='images/{{buyer-name}}.png') }}" height="25%" width="auto" border="1px"></p>
+        <p class="buyer-photo"><img src={{curr_buyer.photo}} height="25%" width="auto" border="1px"></p>
     </div>
 {% endblock content %}
     
