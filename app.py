@@ -405,6 +405,8 @@ def find_price_of_cart(cartID):
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         filter(IsPlacedInCart.cartID==cartID).all()
     total_price = total_price[0][0] #some weird SQL thing
+    if total_price == None:
+        total_price = 0
     return total_price
 
 @app.route('/order')
