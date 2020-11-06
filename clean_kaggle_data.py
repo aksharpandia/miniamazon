@@ -24,6 +24,44 @@ def clean_data(csv):
             continue
     print(count)
 
+    buyer_info = {}
+    newcount = 0
+    for i in range(5):
+        raw_review_info = data.iloc[i]['customer_reviews']
+        if raw_review_info == raw_review_info:
+            get_all_buyerinfo(i, raw_review_info, buyer_info)
+            process_single_buyer(buyer_info[i], newcount)
+            newcount += 1
+        else:
+            continue
+    print(newcount)
+
+def get_all_buyerinfo(i, raw_review_info, buyer_info):
+    on = 0
+    review_info = raw_review_info.strip().split("//")
+    misc = review_info[3].split()
+    for idx in range(len(misc)):
+        if misc[idx]=='on':
+            on = idx
+    reviewer_name = ' '.join(misc[1:on])
+    buyer_info[i]=[reviewer_name]
+    return buyer_info
+
+def process_single_buyer(buyer_name, newcount):
+    print('---- new buyer ----')
+    newbuyer = buyer_name[0]
+    print(newbuyer)
+    # create user because user needs to exist before seller
+    encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
+    user = User(newbuyer, newbuyer+"@gmail.com", encryptedPassword, "buyer", datetime.date(datetime.now()))
+    db.session.add(user)
+    db.session.commit()
+    # create buyer
+    buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, newbuyer+"@gmail.com")
+    db.session.add(buyer)
+    db.session.commit()
+    # to do: create cart (since every buyer needs to have a cart)
+
 def process_seller_row(data, line):
     print('---- new product ----')
     string_json_sellers = data.iloc[line]['sellers'].replace('=>', ':')

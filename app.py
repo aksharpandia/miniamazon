@@ -116,24 +116,20 @@ def seller_history_product(model_num):
         .join(Order, ItemsInOrder.orderID == Order.orderID).join(Buyer, Order.buyerID == Buyer.buyerID))
 
 @app.route('/buyer')
-def buyer():
-    return render_template('buyer.html', buyers=Buyer.query.all())
-
-@app.route('/buyer/<buyer_ID>')
-def buyer_ID(buyer_ID):
+def buyer_ID():
     return render_template('specific-buyer.html', 
-        curr_buyer=Buyer.query.filter(Buyer.buyerID == buyer_ID).first()
+        curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first()
     )
 
-@app.route('/buyer/<buyer_ID>/addBalance', methods=['GET', 'POST'])
-def addBalance(buyer_ID):
+@app.route('/buyer/addBalance', methods=['GET', 'POST'])
+def addBalance():
     form = AddBalanceForm()
-    curr_buyer = Buyer.query.filter(Buyer.buyerID == buyer_ID).first()
+    curr_buyer = Buyer.query.filter(Buyer.buyerID == current_user.id).first()
     if request.method=='POST': # need to validate form
         balance = curr_buyer.balance + form.newbalance.data
         save_balance_add(curr_buyer, balance, form, new=True)
         flash(f'You added {form.newbalance.data} to the balance', 'success')
-        return redirect('/buyer/' + str(buyer_ID)) # redirect to buyer profile page so they can see the updated table
+        return redirect('/buyer') # redirect to buyer profile page so they can see the updated table
     return render_template('add-balance.html', title='Add Balance', form=form)
     
 
