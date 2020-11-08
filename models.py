@@ -78,7 +78,7 @@ class Item(db.Model):
 class Category(db.Model):
     __tablename__ = "category"
 
-    category = db.Column(db.String(60), primary_key=True)
+    category = db.Column(db.String(120), primary_key=True)
     numberOfItems = db.Column(db.Integer, nullable=False)
 
     def __init__(self, category, numberOfItems):
