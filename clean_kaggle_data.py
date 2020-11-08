@@ -62,6 +62,9 @@ def process_single_buyer(buyer_name, newcount):
     db.session.commit()
     # to do: create cart (since every buyer needs to have a cart)
 
+# global dict for counting categories
+categories_dict = {}
+
 def process_seller_row(data, line):
     print('---- new product ----')
     string_json_sellers = data.iloc[line]['sellers'].replace('=>', ':')
@@ -73,6 +76,8 @@ def process_seller_row(data, line):
             process_single_seller(seller, data, line)
     else:
         process_single_seller(sellers, data, line)
+    seed_category_info()
+
 
 def process_single_seller(seller, data, line):
     print('---- new seller ----')
@@ -107,13 +112,15 @@ def process_single_seller(seller, data, line):
     product_name = data.iloc[line]['product_name'].strip()
     product_image = 'img1.jpg'
     stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0new')
-    if (stock[0] != stock[0]):
-        stock_left = int(stock[0])
-    else:
+    # if (stock[0] != stock[0]):
+    # if (pd.isna(stock[0])): 
+    if (stock[0] == 'nan'): # if nan (it's a string), set stock_left=0
         stock_left = 0
+    else:
+        stock_left = int(stock[0])
     raw_rating = data.iloc[line]['average_review_rating']
     rating = 0.0
-    if raw_rating == raw_rating: #checking for NaN, any NaNs are not equal to self
+    if raw_rating == raw_rating:
         rating = float(raw_rating[0:3]) 
     if (rating >= 4.0):
         is_recommended = True
@@ -125,5 +132,18 @@ def process_single_seller(seller, data, line):
     product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
     stock_left, is_recommended, price)
     db.session.add(product)
+
+    # create category
+    category = data.iloc[line]['amazon_category_and_sub_category'].strip()
+    if category in categories_dict:
+        categories_dict[category] += stock_left
+    else:
+        categories_dict[category] = 1
+
+def seed_category_info():
+    for category, count in categories_dict.items():
+        c = Category(category, count)
+        db.session.add(c)
+        db.session.commit()
 
 clean_data('amazon_co-ecommerce_sample.csv')
