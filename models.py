@@ -36,9 +36,9 @@ class User(db.Model, UserMixin):
 class Product(db.Model):
     __tablename__ = "product"
 
-    modelNum = db.Column(db.Integer, primary_key=True)
+    modelNum = db.Column(db.Text(), primary_key=True)
     userID = db.Column(db.Integer, db.ForeignKey('seller.sellerID'), primary_key=True) # will have to check that user ID is a seller ID
-    productDescription = db.Column(db.String(120)) # text for longer string inputs?
+    productDescription = db.Column(db.Text()) # text for longer string inputs?
     productImage = db.Column(db.String(120)) # image but image files are stored in file system, this is the path to that
     productName = db.Column(db.String(120), nullable=False)
     stockLeft = db.Column(db.Integer, nullable=False)
@@ -63,7 +63,7 @@ class Item(db.Model):
 
     itemID = db.Column(db.Integer, primary_key=True)
     isSold = db.Column(db.Boolean, nullable=False)
-    modelNum = db.Column(db.Integer)
+    modelNum = db.Column(db.Text())
     userID = db.Column(db.Integer)
 
     def __init__(self, itemID, isSold, modelNum, userID):
@@ -78,7 +78,7 @@ class Item(db.Model):
 class Category(db.Model):
     __tablename__ = "category"
 
-    category = db.Column(db.String(60), primary_key=True)
+    category = db.Column(db.String(120), primary_key=True)
     numberOfItems = db.Column(db.Integer, nullable=False)
 
     def __init__(self, category, numberOfItems):
