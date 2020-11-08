@@ -16,7 +16,7 @@ from datetime import datetime
 def clean_data(csv):
     data = pd.read_csv(csv)
     count = 0
-    for line in range(5): # for now, just test with a really small amount of data
+    for line in range(10): # for now, just test with a really small amount of data
         raw_sellers = data.iloc[line]['sellers']
         if raw_sellers == raw_sellers: # will only work with rows that have sellers
             process_seller_row(data, line)
@@ -27,7 +27,7 @@ def clean_data(csv):
 
     buyer_info = {}
     newcount = 0
-    for i in range(5):
+    for i in range(10):
         raw_review_info = data.iloc[i]['customer_reviews']
         if raw_review_info == raw_review_info:
             get_all_buyerinfo(i, raw_review_info, buyer_info)
@@ -35,6 +35,8 @@ def clean_data(csv):
             newcount += 1
         else:
             continue
+    # after all the rows are processed, add the categories
+    seed_category_info()
     print(newcount)
 
 def get_all_buyerinfo(i, raw_review_info, buyer_info):
@@ -77,8 +79,6 @@ def process_seller_row(data, line):
             process_single_seller(seller, data, line)
     else:
         process_single_seller(sellers, data, line)
-    seed_category_info()
-
 
 def process_single_seller(seller, data, line):
     print('---- new seller ----')
@@ -111,7 +111,14 @@ def process_single_seller(seller, data, line):
     product_description = (raw_description + '\n \n' + raw_info)
     # product_description = unicodedata2.normalize("NFKD", product_des)
     product_name = data.iloc[line]['product_name'].strip()
-    product_image = 'img1.jpg'
+    category = data.iloc[line]['amazon_category_and_sub_category'].strip()
+    if category!='':
+        c_list = category.split('> ')
+        c_last = c_list[-1]
+        product_img = c_last.replace(' ', '')
+        product_image = product_img + '.jpg'
+    else:
+        product_image = 'Toys.jpg' # default image if category is empty
     stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0new')
     # if (stock[0] != stock[0]):
     # if (pd.isna(stock[0])): 
@@ -121,7 +128,7 @@ def process_single_seller(seller, data, line):
         stock_left = int(stock[0])
     for num in range(stock_left):
         # create items
-        item_id = random.randint(0, 5000)
+        item_id = random.randint(0, 1000000)
         is_sold = False
         item = Item(item_id, is_sold, model_number, user.get_id())
         db.session.add(item)
@@ -142,7 +149,6 @@ def process_single_seller(seller, data, line):
     db.session.add(product)
 
     # create category
-    category = data.iloc[line]['amazon_category_and_sub_category'].strip()
     if category in categories_dict:
         categories_dict[category] += stock_left
     else:
