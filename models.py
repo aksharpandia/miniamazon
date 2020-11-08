@@ -63,7 +63,7 @@ class Item(db.Model):
 
     itemID = db.Column(db.Integer, primary_key=True)
     isSold = db.Column(db.Boolean, nullable=False)
-    modelNum = db.Column(db.Integer)
+    modelNum = db.Column(db.Text())
     userID = db.Column(db.Integer)
 
     def __init__(self, itemID, isSold, modelNum, userID):

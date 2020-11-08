@@ -1,6 +1,7 @@
 from app import db, bcrypt
 from models import *
 import pandas as pd
+import random
 import warnings
 import json
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -118,6 +119,13 @@ def process_single_seller(seller, data, line):
         stock_left = 0
     else:
         stock_left = int(stock[0])
+    for num in range(stock_left):
+        # create items
+        item_id = random.randint(0, 5000)
+        is_sold = False
+        item = Item(item_id, is_sold, model_number, user.get_id())
+        db.session.add(item)
+        db.session.commit()
     raw_rating = data.iloc[line]['average_review_rating']
     rating = 0.0
     if raw_rating == raw_rating:
