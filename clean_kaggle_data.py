@@ -153,11 +153,8 @@ def process_single_seller(seller, data, line):
         product_count+=1
         # create product 
         product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
-        stock_left, is_recommended, price)
+        stock_left, is_recommended, price, category)
         db.session.add(product)
-        # create relationship set entry
-        belongs_to_category = BelongsToCategory(model_number, category)
-        db.session.add(belongs_to_category)
 
         # create category
         if category in categories_dict:
