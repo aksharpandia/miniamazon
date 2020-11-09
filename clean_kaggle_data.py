@@ -16,7 +16,7 @@ from datetime import datetime
 def clean_data(csv):
     data = pd.read_csv(csv)
     count = 0
-    for line in range(10): # for now, just test with a really small amount of data
+    for line in range(2000): # for now, just test with a really small amount of data
         raw_sellers = data.iloc[line]['sellers']
         if raw_sellers == raw_sellers: # will only work with rows that have sellers
             process_seller_row(data, line)
@@ -27,7 +27,7 @@ def clean_data(csv):
 
     buyer_info = {}
     newcount = 0
-    for i in range(10):
+    for i in range(1000):
         raw_review_info = data.iloc[i]['customer_reviews']
         if raw_review_info == raw_review_info:
             separate_reviews = raw_review_info.strip().split("|")
@@ -55,18 +55,18 @@ def get_all_buyerinfo(i, review_info, buyer_info):
 
 def process_single_buyer(buyer_name, newcount):
     print('---- new buyer ----')
-    newbuyer = buyer_name[0]
+    newbuyer = buyer_name[0][:100]
     print(newbuyer)
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
-    buyerEmail = newbuyer+"@gmail.com"
+    buyerEmail = newbuyer+"@gmail.com"[:100]
     existingUser = User.query.filter(User.email == buyerEmail).first()
     if existingUser is None:
         user = User(newbuyer, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
         # create buyer
-        buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, newbuyer+"@gmail.com")
+        buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, buyerEmail)
         db.session.add(buyer)
         db.session.commit()
     # to do: create cart (since every buyer needs to have a cart)
@@ -92,7 +92,7 @@ def process_single_seller(seller, data, line):
     seller_name = ''
     for attr, value in seller.items():
         if ('Seller_name' in attr):
-            seller_name = value
+            seller_name = value[:100]
         if ('Seller_price' in attr):
             seller_price = value
     print(seller_name)
@@ -100,14 +100,14 @@ def process_single_seller(seller, data, line):
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     # check if user exists
-    userEmail = seller_name+"@gmail.com"
+    userEmail = seller_name+"@gmail.com"[:100]
     user = User.query.filter(User.email == userEmail).first()
     if user is None:
-        user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()), "Elementary School")
+        user = User(seller_name, userEmail, encryptedPassword, "seller", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
         # create seller
-        seller = Seller(user.get_id(), seller_name, seller_name+"@gmail.com")
+        seller = Seller(user.get_id(), seller_name, userEmail)
         db.session.add(seller)
         db.session.commit()
 
@@ -119,18 +119,22 @@ def process_single_seller(seller, data, line):
         raw_description = str(data.iloc[line]['product_description'])
         raw_info = str(data.iloc[line]['product_information'])
         product_description = raw_description.replace('Product Description', '')
-        print(product_description)
+        product_description = product_description[:100]
+        # print(product_description)
         # product_description = unicodedata2.normalize("NFKD", product_des)
         product_name = data.iloc[line]['product_name'].strip()
-        category = data.iloc[line]['amazon_category_and_sub_category'].strip()
-        if category!='':
+        product_name = product_name[:100]
+        category = data.iloc[line]['amazon_category_and_sub_category']
+        if isinstance(category, str):
             c_list = category.split('> ')
             c_last = c_list[-1]
             product_img = c_last.replace(' ', '')
             product_image = product_img + '.jpg'
         else:
             product_image = 'Toys.jpg' # default image if category is empty
-        stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0new')
+            category = 'Hobbies > Model Trains & Railway Sets > Rail Vehicles > Trains' # default category
+
+        stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0')
         # if (stock[0] != stock[0]):
         # if (pd.isna(stock[0])): 
         if (stock[0] == 'nan'): # if nan (it's a string), set stock_left=0
@@ -140,6 +144,8 @@ def process_single_seller(seller, data, line):
         for num in range(stock_left):
             # create items
             item_id = random.randint(0, 1000000)
+            while (Item.query.filter(Item.itemID == item_id).first() is not None):
+                item_id = random.randint(0, 1000000)
             is_sold = False
             item = Item(item_id, is_sold, model_number, user.get_id())
             db.session.add(item)
