@@ -15,6 +15,7 @@ class AddProductForm(FlaskForm):
     stock = IntegerField('How many are you (re)stocking?')
     isRecommended = BooleanField('Should This Be Recommended') #just added this cuz it's required for some reason
     price = FloatField('Price of the Product') # nullable=false so should this be inputrequired?
+    category = StringField('Category of the Product')
     submit = SubmitField('Add Product(s)')
 
 class AddBuyerForm(FlaskForm):

@@ -162,8 +162,8 @@ def product_id(model_num):
             Product.query\
             .join(User, User.id == Product.userID).filter(Product.modelNum == model_num)
             .with_entities(User.name, Product.stockLeft, Product.price),
-        curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
-        categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
+        # curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
+        # categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
         ratings=Reviews.query.filter(Reviews.modelNum == model_num),
         avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0'),
         form=form,
