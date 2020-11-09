@@ -43,5 +43,47 @@
             </tbody>
         </table>
     </div>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> ee313c3... css for products
+=======
+>>>>>>> 1b061f7... adding reviews to specific product page
+>>>>>>> 37ddc7e... adding reviews to specific product page
+    <div class="reviews-table-title">Reviews for the {{curr_product.productName}}</div>
+    <table>
+        <thead>
+            <th>Headline</th>
+            <th>Rating</th>
+            <th>Commentary</th>
+            <th>Date</th>
+        </thead>
+
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td> {{review['headline']}} </td>
+                <td> {{review['rating']}}</td>
+                <td> {{review['commentary']}}</td>
+                <td> {{review['dateReviewed']}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 04f744a... adding reviews for specific prods
+=======
+=======
+>>>>>>> 94d549b... css for products
+>>>>>>> ee313c3... css for products
+=======
+=======
+>>>>>>> 94d549b... css for products
+=======
+>>>>>>> 1b061f7... adding reviews to specific product page
+>>>>>>> 37ddc7e... adding reviews to specific product page
     <br><br>
 {% endblock content %}
