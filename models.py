@@ -91,12 +91,21 @@ class Category(db.Model):
 #     modelNum = db.Column(db.Text(), primary_key=True)
 #     categoryName = db.Column(db.String(120))
 
+<<<<<<< HEAD
 #     def __init__(self, modelNum, categoryName):
 #         self.modelNum = modelNum 
 #         self.categoryName = categoryName 
 
 #     def __repr__(self):
 #         return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
+=======
+    def __init__(self, modelNum, categoryName):
+        self.modelNum = modelNum 
+        self.categoryName = categoryName 
+
+    def __repr__(self):
+        return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
+>>>>>>> 04f744a... adding reviews for specific prods
 
 class Cart(db.Model):
     __tablename__ = "cart"

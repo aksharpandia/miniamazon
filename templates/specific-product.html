@@ -43,5 +43,28 @@
             </tbody>
         </table>
     </div>
+<<<<<<< HEAD
+=======
+    <div class="reviews-table-title">Reviews for the {{curr_product.productName}}</div>
+    <table>
+        <thead>
+            <th>Headline</th>
+            <th>Rating</th>
+            <th>Commentary</th>
+            <th>Date</th>
+        </thead>
+
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td> {{review['headline']}} </td>
+                <td> {{review['rating']}}</td>
+                <td> {{review['commentary']}}</td>
+                <td> {{review['dateReviewed']}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+>>>>>>> 04f744a... adding reviews for specific prods
     <br><br>
 {% endblock content %}
