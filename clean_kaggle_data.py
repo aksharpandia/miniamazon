@@ -111,6 +111,7 @@ def process_single_seller(seller, data, line):
         db.session.add(seller)
         db.session.commit()
 
+<<<<<<< HEAD
         # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
         # productName ('product_name'), productImage (PLACEHOLDER for now)
         # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
@@ -158,6 +159,54 @@ def process_single_seller(seller, data, line):
         product = Product(model_number, user.get_id(), product_description, product_image, product_name, 
         stock_left, is_recommended, price, category)
         db.session.add(product)
+=======
+    # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
+    # productName ('product_name'), productImage (PLACEHOLDER for now)
+    # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
+    product_count = 0
+    model_number = data.iloc[line]['uniq_id'].strip()
+    raw_description = str(data.iloc[line]['product_description'])
+    raw_info = str(data.iloc[line]['product_information'])
+    product_description = (raw_description + '\n \n' + raw_info)
+    # product_description = unicodedata2.normalize("NFKD", product_des)
+    product_name = data.iloc[line]['product_name'].strip()
+    category = data.iloc[line]['amazon_category_and_sub_category'].strip()
+    if category!='':
+        c_list = category.split('> ')
+        c_last = c_list[-1]
+        product_img = c_last.replace(' ', '')
+        product_image = product_img + '.jpg'
+    else:
+        product_image = 'Toys.jpg' # default image if category is empty
+    stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0new')
+    # if (stock[0] != stock[0]):
+    # if (pd.isna(stock[0])): 
+    if (stock[0] == 'nan'): # if nan (it's a string), set stock_left=0
+        stock_left = 0
+    else:
+        stock_left = int(stock[0])
+    for num in range(stock_left):
+        # create items
+        item_id = random.randint(0, 1000000)
+        is_sold = False
+        item = Item(item_id, is_sold, model_number, user.get_id())
+        db.session.add(item)
+        db.session.commit()
+    raw_rating = data.iloc[line]['average_review_rating']
+    rating = 0.0
+    if raw_rating == raw_rating:
+        rating = float(raw_rating[0:3]) 
+    if (rating >= 4.0):
+        is_recommended = True
+    else:
+        is_recommended = False 
+    price = float(seller_price[1:])
+    product_count+=1
+    # create product
+    product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
+    stock_left, is_recommended, price)
+    db.session.add(product)
+>>>>>>> 0caabf0... fixing conflicts from kaggle data
 
     # create category
     if category in categories_dict:
