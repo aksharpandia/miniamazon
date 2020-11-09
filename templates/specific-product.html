@@ -6,16 +6,16 @@
 {% block content %}
     <div class="product-info-header">
         <div class="product-title">{{curr_product.productName}}</div>
+        <div class="product-category">{{curr_product.category}}</div>
         <div class="product-description">{{curr_product.productDescription}}</div>
-        <div class="product-category">{{curr_category.categoryName}}</div>
     </div>
 
     <div class="product-info">
-        <p class="product-img"><img src="{{ url_for('static',filename='images/trash-icon.png') }}" height="25%" width="auto" border="1px"></p>
+        <p class="product-img"><img src="/static/images/products/{{curr_product.productImage}}" height="25%" width="auto" border="1px"></p>
         <div>
             <div class="seller-product-name">{{curr_product.productName}}</div>
             <div class="seller-product-avg-rating">Average Rating: {{avg_rating}}
-            <div class="seller-product-desc">{{curr_product.productDescription}}</div>
+            <!-- <div class="seller-product-desc">{{curr_product.productDescription}}</div> -->
             <div class="seller-product-quantity">Qty Left: {{curr_product.stockLeft}}</div>
         </div>
     </div>
@@ -43,4 +43,25 @@
             </tbody>
         </table>
     </div>
+    <div class="reviews-table-title">Reviews for the {{curr_product.productName}}</div>
+    <table>
+        <thead>
+            <th>Headline</th>
+            <th>Rating</th>
+            <th>Commentary</th>
+            <th>Date</th>
+        </thead>
+
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td> {{review['headline']}} </td>
+                <td> {{review['rating']}}</td>
+                <td> {{review['commentary']}}</td>
+                <td> {{review['dateReviewed']}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br><br>
 {% endblock content %}
