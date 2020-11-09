@@ -44,6 +44,9 @@
     /* background-color: orange; */
     text-align: center;
     margin: 0 auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /* .product-info {
@@ -62,16 +65,13 @@
 
 .seller-product-name {
     font-weight: 600;
-    font-size: 28px;
+    font-size: 24px;
     display: inline-block;
 }
 
 .seller-product-desc {
     font-size: 15px;
     font-style: italic;
-    text-overflow: ellipsis;
-    /* white-space: nowrap; */
-    overflow: hidden;
 }
 
 .seller-product-price {
