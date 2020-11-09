@@ -92,8 +92,8 @@ class BelongsToCategory(db.Model):
     # relationship set between a product and category
     __tablename__ = "belongstocategory"
 
-    modelNum = db.Column(db.Integer, primary_key=True)
-    categoryName = db.Column(db.String(60), primary_key=True)
+    modelNum = db.Column(db.Text(), primary_key=True)
+    categoryName = db.Column(db.String(120))
 
     def __init__(self, modelNum, categoryName):
         self.modelNum = modelNum 
