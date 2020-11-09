@@ -38,8 +38,9 @@ class Product(db.Model):
     stockLeft = db.Column(db.Integer, nullable=False)
     isRecommended = db.Column(db.Boolean, nullable=False)
     price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(120))
 
-    def __init__(self, modelNum, userID, productDescription, productImage, productName, stockLeft, isRecommended, price):
+    def __init__(self, modelNum, userID, productDescription, productImage, productName, stockLeft, isRecommended, price, category):
         self.modelNum = modelNum
         self.userID = userID
         self.productDescription = productDescription
@@ -48,6 +49,7 @@ class Product(db.Model):
         self.stockLeft = stockLeft
         self.isRecommended = isRecommended
         self.price = price
+        self.category = category
     
     def __repr__(self):
         return f"Product('{self.modelNum}', '{self.userID}')"
@@ -82,19 +84,19 @@ class Category(db.Model):
     def __repr__(self):
         return f"Category('{self.category}', '{self.numberOfItems}')"
 
-class BelongsToCategory(db.Model):
-    # relationship set between a product and category
-    __tablename__ = "belongstocategory"
+# class BelongsToCategory(db.Model):
+#     # relationship set between a product and category
+#     __tablename__ = "belongstocategory"
 
-    modelNum = db.Column(db.Integer, primary_key=True)
-    categoryName = db.Column(db.String(60), primary_key=True)
+#     modelNum = db.Column(db.Text(), primary_key=True)
+#     categoryName = db.Column(db.String(120))
 
-    def __init__(self, modelNum, categoryName):
-        self.modelNum = modelNum 
-        self.categoryName = categoryName 
+#     def __init__(self, modelNum, categoryName):
+#         self.modelNum = modelNum 
+#         self.categoryName = categoryName 
 
-    def __repr__(self):
-        return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
+#     def __repr__(self):
+#         return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
 
 class Cart(db.Model):
     __tablename__ = "cart"
