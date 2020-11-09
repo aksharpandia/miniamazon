@@ -59,7 +59,7 @@ def process_single_buyer(buyer_name, newcount):
     buyerEmail = newbuyer+"@gmail.com"
     existingUser = User.query.filter(User.email == buyerEmail).first()
     if existingUser is None:
-        user = User(newbuyer, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()))
+        user = User(newbuyer, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
         # create buyer
@@ -98,9 +98,9 @@ def process_single_seller(seller, data, line):
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     # check if user exists
     userEmail = seller_name+"@gmail.com"
-    existingUser = User.query.filter(User.email == userEmail).first()
-    if existingUser is None:
-        user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()))
+    user = User.query.filter(User.email == userEmail).first()
+    if user is None:
+        user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
         # create seller
