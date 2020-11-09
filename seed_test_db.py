@@ -266,7 +266,7 @@ db.session.add(itemtoadd)
 db.session.commit()
 
 # adding to review table
-reviews1 = Reviews(1, 2, "ok", "awful product", "2020-04-23", 4, 246468680)
+reviews1 = Reviews(1, 2, "ok", "awful product", "2020-04-23", 4, 123456789)
 db.session.add(reviews1)
 reviews2 = Reviews(2, 4, "ok", "decent product", "2020-04-23", 4, 246468680)
 db.session.add(reviews2)
