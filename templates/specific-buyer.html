@@ -16,5 +16,30 @@
         </td>
         <p class="buyer-photo"><img src={{curr_buyer.photo}} height="25%" width="auto" border="1px"></p>
     </div>
+
+    <div class="user-table-title">Order History.</div>
+    <table>
+        <thead>
+            <th>Order ID</th>
+            <th>Transaction Amount</th>
+            <th>Delivery Option</th>
+            <th>Created Date</th>
+        </thead>
+
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td> 
+                    <a href="/order/{{order.orderID}}">
+                        {{order.orderID}}
+                    </a>
+                </td>
+                <td> {{order.transacAmount}}</td>
+                <td> {{order.deliveryOption}}</td>
+                <td> {{order.createdDateTime}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}
     

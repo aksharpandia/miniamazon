@@ -117,9 +117,14 @@ def seller_history_product(model_num):
 
 @app.route('/buyer')
 def buyer_ID():
+    form = SearchForm()
+    if request.method == 'POST':
+        return searchResults(search)
     return render_template('specific-buyer.html', 
-        curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first()
+        curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first(), orders = Order.query.filter(Order.buyerID==current_user.id).all(), form=form
     )
+
+
 
 @app.route('/buyer/addBalance', methods=['GET', 'POST'])
 def addBalance():
