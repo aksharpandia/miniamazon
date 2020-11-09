@@ -111,7 +111,6 @@ def process_single_seller(seller, data, line):
         db.session.add(seller)
         db.session.commit()
 
-<<<<<<< HEAD
         # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
         # productName ('product_name'), productImage (PLACEHOLDER for now)
         # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
@@ -159,7 +158,6 @@ def process_single_seller(seller, data, line):
         product = Product(model_number, user.get_id(), product_description, product_image, product_name, 
         stock_left, is_recommended, price, category)
         db.session.add(product)
-=======
     # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
     # productName ('product_name'), productImage (PLACEHOLDER for now)
     # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
@@ -206,7 +204,6 @@ def process_single_seller(seller, data, line):
     product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
     stock_left, is_recommended, price)
     db.session.add(product)
->>>>>>> 0caabf0... fixing conflicts from kaggle data
 
     # create category
     if category in categories_dict:
@@ -222,35 +219,6 @@ def seed_category_info():
             db.session.add(c)
             db.session.commit()
 
-def get_all_ratings(csv):
-    data = pd.read_csv(csv) #reads in the csv
-    all_ratings = []
-    count = 0
-    for i in range(len((data['average_review_rating']))):
-        raw_rating = data.iloc[i]['average_review_rating']
-        if raw_rating == raw_rating: #checking for NaN, any NaNs are not equal to self
-            rating = float(raw_rating[0:3]) 
-            all_ratings.append(rating)
-        else:
-            all_ratings.append(None)
-            count+=1
-    return all_ratings
-
-#getting all the data from number of reviews col in csv, putting in a list. putting None for empty cells
-
-def get_all_numberofreviews(csv):
-    data = pd.read_csv(csv)
-    all_numberofreviews = []
-    count = 0
-    for i in range(len((data['number_of_reviews']))):
-        count += 1
-        raw_number_of_reviews = data.iloc[i]['number_of_reviews']
-        if raw_number_of_reviews == raw_number_of_reviews:
-            number_of_reviews = locale.atoi(raw_number_of_reviews) #getting rid of commas in numbers
-            all_numberofreviews.append(int(number_of_reviews))
-        else:
-            all_numberofreviews.append(None)
-    return all_numberofreviews
 
 def get_all_reviewinfo(csv):
     data = pd.read_csv(csv)
@@ -284,16 +252,12 @@ def get_all_reviewinfo(csv):
                         all_review_info[modelNum]=[[user_rating, headline, commentary, date, reviewer_name, modelNum]]
                     else:
                         all_review_info[modelNum].append([user_rating, headline, commentary, date, reviewer_name, modelNum])
-                    email = reviewer_name+"@gmail.com"
-                    existingUser = User.query.filter(User.email == email).first()
-                    unique_id = existingUser.get_id()
-                    review = Reviews(count,user_rating,headline,commentary,date,unique_id,modelNum)
-                    db.session.add(review)
-                    db.session.commit()
         else:
             all_review_info[modelNum]=None #keys of dictioniaries are just the row number
     return all_review_info
 
+#all_ratings = print(len(get_all_ratings('amazon_co-ecommerce_sample.csv')))
+#all_numberofreviews = print(len(get_all_numberofreviews('amazon_co-ecommerce_sample.csv')))
+#get_all_reviewinfo = print(len(get_all_reviewinfo('amazon_co-ecommerce_sample.csv')))
 
-#clean_data('amazon_co-ecommerce_sample.csv')
-get_all_rev_info = print(get_all_reviewinfo('amazon_co-ecommerce_sample.csv'))
+clean_data('amazon_co-ecommerce_sample.csv')
