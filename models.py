@@ -11,21 +11,15 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60))
     type = db.Column(db.String(120))
     dateJoined = db.Column(db.String(60))
-    # balance = db.Column(db.Float)
-    # shippingAddress = db.Column(db.String(120))
-    # billingAddress = db.Column(db.String(120))
-    # photo = db.Column(db.String(120))
+    securityQuestionAnswer = db.Column(db.String(120))
 
-    def __init__(self, name, email, password, type, dateJoined):
+    def __init__(self, name, email, password, type, dateJoined, securityQuestionAnswer):
         self.name = name
         self.email = email
         self.password = password
         self.type = type
         self.dateJoined = dateJoined
-        # self.balance = balance
-        # self.shippingAddress = shippingAddress
-        # self.billingAddress = billingAddress
-        # self.photo = photo
+        self.securityQuestionAnswer = securityQuestionAnswer
 
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"

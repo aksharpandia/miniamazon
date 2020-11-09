@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, FileField, SubmitField, BooleanField, FloatField, PasswordField
-from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationError
+from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationError, EqualTo
 from models import *
 
 class SearchForm(FlaskForm):
@@ -25,6 +25,7 @@ class AddBuyerForm(FlaskForm):
     shippingAddress = StringField('Shipping Address', validators=[InputRequired()])
     billingAddress = StringField('Billing Address', validators=[InputRequired()])
     photo = FileField('User Image', validators=[Regexp('[^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$')])
+    securityQuestionAnswer = StringField('Name of Elementary School (Security Question)', validators=[InputRequired()])
     submit = SubmitField('Finish Account Setup')
 
     def validate_name(self, name):
@@ -42,6 +43,7 @@ class AddSellerForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired()])
     password = StringField('Password', validators=[InputRequired()])
+    securityQuestionAnswer = StringField('Name of Elementary School (Security Question)', validators=[InputRequired()])
     submit = SubmitField('Finish Account Setup')
 
     def validate_name(self, name):
@@ -88,3 +90,14 @@ class LogInForm(FlaskForm):
 class AddBalanceForm(FlaskForm):
     newbalance = FloatField('Add To Balance By', validators=[InputRequired()])
     submit = SubmitField('Add Balance')
+
+class ForgotPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired()])
+    securityQuestionAnswer = StringField('What is the name of your elementary school?', validators=[InputRequired()])
+    submit = SubmitField('Verify Security Question')
+
+class NewPasswordForm(FlaskForm):
+    newPassword = PasswordField('New Password', validators=[InputRequired()])
+    reenterPassword = PasswordField('Re-enter Password', validators=[InputRequired(), EqualTo('newPassword', message='Passwords must match')])
+    submit = SubmitField('Change Password')
+
