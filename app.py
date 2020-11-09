@@ -286,7 +286,6 @@ def createOrder(cart_id):
         for itemID in itemsincart:
             add_item_to_order(orderID, itemID)
             delete_item_from_cart(itemID, cart_id)
-<<<<<<< HEAD
             change_isSold_flag(itemID)
 
         for entry in productsincart:
@@ -294,8 +293,6 @@ def createOrder(cart_id):
 
         change_buyer_balance(total_price, cart_id)
             
-=======
->>>>>>> 04f744a... adding reviews for specific prods
         flash(
             f'You successfully created Order {newOrder.orderID}!', 'success')
         return redirect('/order')
@@ -310,7 +307,6 @@ def delete_item_from_cart(itemID, cart_id):
         IsPlacedInCart.cartID == cart_id).first()
     db.session.delete(itemtodel)
     db.session.commit()
-<<<<<<< HEAD
 
 def change_isSold_flag(itemID):
     for item in db.session.query(Item).filter(Item.itemID == itemID):
@@ -334,8 +330,6 @@ def change_product_quantity(entry):
     product_to_edit.stockLeft = product_to_edit.stockLeft - quantity
     db.session.add(product_to_edit)
     db.session.commit()
-=======
->>>>>>> 04f744a... adding reviews for specific prods
 
 @app.route('/update_product/<seller_id>/<product_id>',  methods=['GET', 'POST'])
 def updateProduct(seller_id, product_id):
@@ -387,11 +381,7 @@ def cart_id(cart_cartID):
     curr_cart = Cart.query.filter(Cart.cartID == cart_cartID).one()
     curr_buyer = User.query.filter(User.id == curr_cart.buyerID).one()
 
-<<<<<<< HEAD
-    # Returns on per product basis (Product Name, Model Number, Sold By, Quantity in cart, Price per unit)
-=======
     # Returns on per product basis (Model Number, Product Name, Sold By, Quantity in cart, Price per unit)
->>>>>>> 04f744a... adding reviews for specific prods
     productsincart = find_products_in_cart(cart_cartID)
     total_price = find_price_of_cart(cart_cartID)
 
@@ -401,11 +391,7 @@ def cart_id(cart_cartID):
         total_price = total_price)
 
 def find_products_in_cart(cartID):
-<<<<<<< HEAD
     # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
-=======
-    # Model Numbner, Product Name, Sold By (user id), Quantity, Price per unit
->>>>>>> 04f744a... adding reviews for specific prods
     return db.session.query(db.func.min(Product.productName), Item.modelNum,
         Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
@@ -419,11 +405,8 @@ def find_price_of_cart(cartID):
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         filter(IsPlacedInCart.cartID==cartID).all()
     total_price = total_price[0][0] #some weird SQL thing
-<<<<<<< HEAD
     if total_price == None:
         total_price = 0
-=======
->>>>>>> 04f744a... adding reviews for specific prods
     return total_price
 
 @app.route('/order')
