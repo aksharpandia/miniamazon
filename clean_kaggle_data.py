@@ -30,24 +30,27 @@ def clean_data(csv):
     for i in range(10):
         raw_review_info = data.iloc[i]['customer_reviews']
         if raw_review_info == raw_review_info:
-            get_all_buyerinfo(i, raw_review_info, buyer_info)
-            process_single_buyer(buyer_info[i], newcount)
-            newcount += 1
+            separate_reviews = raw_review_info.strip().split("|")
+            for rev in separate_reviews:
+                review_info = rev.split(" // ")
+                get_all_buyerinfo(i, review_info, buyer_info)
+                process_single_buyer(buyer_info[i], newcount)
+                newcount += 1
         else:
             continue
     # after all the rows are processed, add the categories
     seed_category_info()
     print(newcount)
 
-def get_all_buyerinfo(i, raw_review_info, buyer_info):
+def get_all_buyerinfo(i, review_info, buyer_info):
     on = 0
-    review_info = raw_review_info.strip().split("//")
-    misc = review_info[3].split()
-    for idx in range(len(misc)):
-        if misc[idx]=='on':
-            on = idx
-    reviewer_name = ' '.join(misc[1:on])
-    buyer_info[i]=[reviewer_name]
+    if len(review_info) > 2: #some reviews for a product are incomplete, so we will skip them. for example, product in row 1704 has an
+        misc = review_info[3].split()
+        for idx in range(len(misc)):
+            if misc[idx]=='on':
+                on = idx
+        reviewer_name = ' '.join(misc[1:on])
+        buyer_info[i]=[reviewer_name]
     return buyer_info
 
 def process_single_buyer(buyer_name, newcount):
