@@ -54,13 +54,16 @@ def process_single_buyer(buyer_name, newcount):
     print(newbuyer)
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
-    user = User(newbuyer, newbuyer+"@gmail.com", encryptedPassword, "buyer", datetime.date(datetime.now()))
-    db.session.add(user)
-    db.session.commit()
-    # create buyer
-    buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, newbuyer+"@gmail.com")
-    db.session.add(buyer)
-    db.session.commit()
+    buyerEmail = newbuyer+"@gmail.com"
+    existingUser = User.query.filter(User.email == buyerEmail).first()
+    if existingUser is None:
+        user = User(newbuyer, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()))
+        db.session.add(user)
+        db.session.commit()
+        # create buyer
+        buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, newbuyer+"@gmail.com")
+        db.session.add(buyer)
+        db.session.commit()
     # to do: create cart (since every buyer needs to have a cart)
 
 # global dict for counting categories
@@ -93,13 +96,17 @@ def process_single_seller(seller, data, line):
     print(seller_price)
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
-    user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()))
-    db.session.add(user)
-    db.session.commit()
-    # create seller
-    seller = Seller(user.get_id(), seller_name, seller_name+"@gmail.com")
-    db.session.add(seller)
-    db.session.commit()
+    # check if user exists
+    userEmail = seller_name+"@gmail.com"
+    existingUser = User.query.filter(User.email == userEmail).first()
+    if existingUser is None:
+        user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()))
+        db.session.add(user)
+        db.session.commit()
+        # create seller
+        seller = Seller(user.get_id(), seller_name, seller_name+"@gmail.com")
+        db.session.add(seller)
+        db.session.commit()
 
     # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
     # productName ('product_name'), productImage (PLACEHOLDER for now)
@@ -150,8 +157,10 @@ def process_single_seller(seller, data, line):
 
 def seed_category_info():
     for category, count in categories_dict.items():
-        c = Category(category, count)
-        db.session.add(c)
-        db.session.commit()
+        existingCategory = Category.query.filter(Category.category == category).first()
+        if existingCategory is None:
+            c = Category(category, count)
+            db.session.add(c)
+            db.session.commit()
 
 clean_data('amazon_co-ecommerce_sample.csv')
