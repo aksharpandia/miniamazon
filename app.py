@@ -366,10 +366,10 @@ def category():
 
 @app.route('/cart')
 def cart():
-    form = SearchForm()
+    curr_cart = Cart.query.filter(current_user.id == Cart.buyerID).first()
     if request.method == 'POST':
         return searchResults(search)
-    return render_template('cart.html', carts=Cart.query.all(), form=form)
+    return redirect('/cart/' + str(curr_cart.cartID))
 
 @app.route('/cart/<cart_cartID>')
 def cart_id(cart_cartID):
