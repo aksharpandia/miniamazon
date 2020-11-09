@@ -202,7 +202,7 @@ def process_single_seller(seller, data, line):
     product_count+=1
     # create product
     product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
-    stock_left, is_recommended, price)
+    stock_left, is_recommended, price, category)
     db.session.add(product)
 
     # create category
