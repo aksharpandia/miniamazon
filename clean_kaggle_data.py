@@ -98,8 +98,8 @@ def process_single_seller(seller, data, line):
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     # check if user exists
     userEmail = seller_name+"@gmail.com"
-    existingUser = User.query.filter(User.email == userEmail).first()
-    if existingUser is None:
+    user = User.query.filter(User.email == userEmail).first()
+    if user is None:
         user = User(seller_name, seller_name+"@gmail.com", encryptedPassword, "seller", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
@@ -150,7 +150,7 @@ def process_single_seller(seller, data, line):
         is_recommended = False 
     price = float(seller_price[1:])
     product_count+=1
-    # create product 
+    # create product
     product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
     stock_left, is_recommended, price)
     db.session.add(product)
