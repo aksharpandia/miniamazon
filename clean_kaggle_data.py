@@ -219,4 +219,78 @@ def seed_category_info():
             db.session.add(c)
             db.session.commit()
 
-clean_data('amazon_co-ecommerce_sample.csv')
+def get_all_ratings(csv):
+    data = pd.read_csv(csv) #reads in the csv
+    all_ratings = []
+    count = 0
+    for i in range(len((data['average_review_rating']))):
+        raw_rating = data.iloc[i]['average_review_rating']
+        if raw_rating == raw_rating: #checking for NaN, any NaNs are not equal to self
+            rating = float(raw_rating[0:3]) 
+            all_ratings.append(rating)
+        else:
+            all_ratings.append(None)
+            count+=1
+    return all_ratings
+
+#getting all the data from number of reviews col in csv, putting in a list. putting None for empty cells
+
+def get_all_numberofreviews(csv):
+    data = pd.read_csv(csv)
+    all_numberofreviews = []
+    count = 0
+    for i in range(len((data['number_of_reviews']))):
+        count += 1
+        raw_number_of_reviews = data.iloc[i]['number_of_reviews']
+        if raw_number_of_reviews == raw_number_of_reviews:
+            number_of_reviews = locale.atoi(raw_number_of_reviews) #getting rid of commas in numbers
+            all_numberofreviews.append(int(number_of_reviews))
+        else:
+            all_numberofreviews.append(None)
+    return all_numberofreviews
+
+def get_all_reviewinfo(csv):
+    data = pd.read_csv(csv)
+    all_review_info = {}
+    count = 0
+    for i in range(len((data['customer_reviews']))):
+        count += 1
+        raw_review_info = data.iloc[i]['customer_reviews']
+        modelNum = data.iloc[i]['uniq_id']
+        if raw_review_info == raw_review_info:
+            separate_reviews = raw_review_info.strip().split("|") #finding each separate review for each product, then decomposing each specific review
+            for rev in separate_reviews:
+                review_info = rev.split(" // ")
+                if len(review_info) > 2: #some reviews for a product are incomplete, so we will skip them. for example, product in row 1704 has an
+                    headline = review_info[0].strip()
+                    #checking if commentary exists; if it doesn't just inserting nothing for commentary
+                    try:
+                        commentary = review_info[4].strip()
+                    except IndexError:
+                        commentary = ""
+                    date = review_info[2].strip()#getting date
+                    misc = review_info[3].split()
+                    user_rating = float(review_info[1].strip())
+
+                    for idx in range(len(misc)):#finding where in the string the name is, it's right before on
+                        if misc[idx]=='on':
+                            on = idx
+                    reviewer_name = ' '.join(misc[1:on])
+
+                    if i not in all_review_info: #if a dict entry does not already exist for a product
+                        all_review_info[modelNum]=[[user_rating, headline, commentary, date, reviewer_name, modelNum]]
+                    else:
+                        all_review_info[modelNum].append([user_rating, headline, commentary, date, reviewer_name, modelNum])
+                    email = reviewer_name+"@gmail.com"
+                    existingUser = User.query.filter(User.email == email).first()
+                    unique_id = existingUser.get_id()
+                    review = Reviews(count,user_rating,headline,commentary,date,unique_id,modelNum)
+                    db.session.add(review)
+                    db.session.commit()
+        else:
+            all_review_info[modelNum]=None #keys of dictioniaries are just the row number
+    return all_review_info
+
+
+#clean_data('amazon_co-ecommerce_sample.csv')
+get_all_rev_info = print(get_all_reviewinfo('amazon_co-ecommerce_sample.csv'))
