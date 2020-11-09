@@ -7,15 +7,19 @@
 .product-description {
     font-size: 16px;
     color: #000000;
+    width: 50%;
+    text-align: center;
+    margin-left: 25%;
+    margin-top: 5px;
 }
 
 .product-category {
-    font-size: 12px;
+    font-size: 20px;
     color: grey;
 }
 
 .product-info {
-    margin-left: 30em;
+    margin-left: 20em;
     margin-top: 5em;
 }
 
@@ -50,7 +54,7 @@
 }
 
 .seller-product-desc {
-    font-size: 20px;
+    font-size: 15px;
     font-style: italic;
 }
 
