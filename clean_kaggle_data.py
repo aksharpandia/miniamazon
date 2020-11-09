@@ -155,7 +155,7 @@ def process_single_seller(seller, data, line):
         price = float(seller_price[1:])
         product_count+=1
         # create product 
-        product = Product(model_number, user.get_id(), product_description, product_name, product_image, 
+        product = Product(model_number, user.get_id(), product_description, product_image, product_name, 
         stock_left, is_recommended, price, category)
         db.session.add(product)
 
