@@ -29,12 +29,14 @@ def clean_data(csv):
     newcount = 0
     for i in range(10):
         raw_review_info = data.iloc[i]['customer_reviews']
-        for rev in separate_reviews:
-            review_info = rev.split(" // ")
-            get_all_buyerinfo(i, review_info, buyer_info)
-            process_single_buyer(buyer_info[i], newcount)
-            newcount += 1
-         else:
+        if raw_review_info == raw_review_info:
+            separate_reviews = raw_review_info.strip().split("|")
+            for rev in separate_reviews:
+                review_info = rev.split(" // ")
+                get_all_buyerinfo(i, review_info, buyer_info)
+                process_single_buyer(buyer_info[i], newcount)
+                newcount += 1
+        else:
             continue
     # after all the rows are processed, add the categories
     seed_category_info()
