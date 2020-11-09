@@ -495,7 +495,7 @@ def register(type):
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(name=form.name.data, email=form.email.data, password=hashed_password,
-            type=type, dateJoined=datetime.date(datetime.now()))
+            type=type, dateJoined=datetime.date(datetime.now()), securityQuestionAnswer=form.securityQuestionAnswer.data)
         db.session.add(user)
         db.session.commit()
 
@@ -520,6 +520,27 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgotPassword():
+    form = ForgotPasswordForm()
+    if request.method=='POST':
+        currUser = User.query.filter(User.email == form.email.data).first()
+        if currUser.securityQuestionAnswer == form.securityQuestionAnswer.data:
+            return redirect(url_for('newPassword', user_id=currUser.id))
+        else:
+            flash('Could not verify the answer to your security question. Please try again', 'danger')
+    return render_template('forgot-password.html', form=form)
+
+@app.route('/new-password/<user_id>', methods=['GET', 'POST'])
+def newPassword(user_id):
+    form = NewPasswordForm()
+    if form.validate_on_submit():
+        currUser = User.query.filter(User.id == user_id).first()
+        currUser.password = bcrypt.generate_password_hash(form.newPassword.data).decode('utf-8')
+        db.session.commit()
+        flash('You successfully updated your password! Try logging in again', 'success')
+        return redirect('/login')
+    return render_template('new-password.html', form=form)
 
 if __name__ == '__main__':
     app.run()
