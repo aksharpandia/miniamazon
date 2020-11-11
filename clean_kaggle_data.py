@@ -83,7 +83,13 @@ def process_single_buyer_and_review(buyer_name, user_rating, headline, commentar
         db.session.add(buyer)
         db.session.add(review)
         db.session.commit()
-    # to do: create cart (since every buyer needs to have a cart)
+        # create cart (since every buyer needs to have a cart)
+        cart_id = random.randint(0, 1000000)
+        while (Cart.query.filter(Cart.cartID == cart_id).first() is not None):
+            cart_id = random.randint(0, 1000000)
+        cart = Cart(cart_id,user.get_id(),datetime.date(datetime.now()))
+        db.session.add(cart)
+        db.session.commit()
 
 # global dict for counting categories
 categories_dict = {}
