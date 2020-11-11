@@ -181,7 +181,7 @@ def addProduct(seller_id):
     if request.method=='POST': # need to validate form
         product = Product(form.productName.data, form.modelNum.data, current_user.id,
                         form.productDescription.data, form.productImage.data, form.stock.data, form.isRecommended.data,
-                        form.price.data)
+                        form.price.data, form.category.data)
         save_product_add(product, form, new=True)
         flash(f'You added {form.stock.data} {form.productName.data} product(s)!', 'success')
         return redirect('/seller')
