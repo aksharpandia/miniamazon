@@ -16,13 +16,13 @@ db.create_all()
 def clean_data(csv):
     data = pd.read_csv(csv)
     count = 0
-    for line in range(2000): # for now, just test with a really small amount of data
-        raw_sellers = data.iloc[line]['sellers']
-        if raw_sellers == raw_sellers: # will only work with rows that have sellers
-            process_seller_row(data, line)
-            count += 1
-        else:
-            continue
+    # for line in range(2000): # for now, just test with a really small amount of data
+    #     raw_sellers = data.iloc[line]['sellers']
+    #     if raw_sellers == raw_sellers: # will only work with rows that have sellers
+    #         process_seller_row(data, line)
+    #         count += 1
+    #     else:
+    #         continue
     #print(count)
 
     get_all_reviewinfo(data)

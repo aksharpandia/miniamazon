@@ -166,7 +166,7 @@ class Reviews(db.Model):
     headline = db.Column(db.String(10000))
     commentary = db.Column(db.String(100000))
     dateReviewed = db.Column(db.String(60))
-    userID= db.Column(db.Integer, db.ForeignKey('buyer.buyerID'))
+    userID= db.Column(db.Integer, db.ForeignKey('user.id'))
     modelNum = db.Column(db.Text())
     def __init__(self, reviewsID, rating, headline, commentary, dateReviewed, userID, modelNum):
         self.reviewsID = reviewsID
