@@ -9,7 +9,7 @@ class SearchForm(FlaskForm):
 
 class AddProductForm(FlaskForm):
     productName = StringField('Product Name')
-    modelNum = IntegerField('Model Number', validators=[InputRequired()])
+    modelNum = StringField('Model Number', validators=[InputRequired()])
     productDescription = StringField('Product Description')
     productImage = FileField('Product Image', validators=[Regexp('[^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$')])
     stock = IntegerField('How many are you (re)stocking?')

@@ -21,9 +21,10 @@
         <li class="nav-element"><a href="/seller">Seller Profile</a></li>
         {% endif %}
 
-        
+        {% if current_user.type == 'buyer' %}
         <li class="nav-element"><a href="/cart">My Cart</a></li>
-
+        {% endif %}
+        
         {% from "_formhelpers.html" import render_field %}
         <li class="nav-element">
             <form action="{{url_for('searchResults')}}", method="POST">
