@@ -10,8 +10,8 @@ locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 from datetime import datetime
 
 # dropping existing databases, then reseeding - once we're ready to get rid of seed_test_db,py, can uncomment these lines
-# db.drop_all()
-# db.create_all()
+db.drop_all()
+db.create_all()
 
 def clean_data(csv):
     data = pd.read_csv(csv)
@@ -23,7 +23,7 @@ def clean_data(csv):
             count += 1
         else:
             continue
-    print(count)
+    #print(count)
 
     get_all_reviewinfo(data)
     seed_category_info()
@@ -32,7 +32,7 @@ def clean_data(csv):
 def get_all_reviewinfo(data):
     all_review_info = {}
     count = 0
-    for i in range(len((data['customer_reviews']))):
+    for i in range(2000):
         raw_review_info = data.iloc[i]['customer_reviews']
         modelNum = data.iloc[i]['uniq_id']
         if raw_review_info == raw_review_info:
@@ -68,7 +68,7 @@ def get_all_reviewinfo(data):
 
 
 def process_single_buyer_and_review(buyer_name, user_rating, headline, commentary, date, modelNum, count):
-    print('---- new buyer ----')
+    #print('---- new buyer ----')
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     buyerEmail = buyer_name+"@gmail.com"
@@ -95,7 +95,7 @@ def process_single_buyer_and_review(buyer_name, user_rating, headline, commentar
 categories_dict = {}
 
 def process_seller_row(data, line):
-    print('---- new product ----')
+    #print('---- new product ----')
     string_json_sellers = data.iloc[line]['sellers'].replace('=>', ':')
     json_sellers = json.loads(string_json_sellers)
     has_multiple_sellers = isinstance(json_sellers['seller'], list)
@@ -107,7 +107,7 @@ def process_seller_row(data, line):
         process_single_seller(sellers, data, line)
 
 def process_single_seller(seller, data, line):
-    print('---- new seller ----')
+    #print('---- new seller ----')
     seller_price = 0.00
     seller_name = ''
     for attr, value in seller.items():
@@ -115,8 +115,8 @@ def process_single_seller(seller, data, line):
             seller_name = value[:100]
         if ('Seller_price' in attr):
             seller_price = value
-    print(seller_name)
-    print(seller_price)
+    #print(seller_name)
+    #print(seller_price)
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     # check if user exists
