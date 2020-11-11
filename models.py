@@ -163,8 +163,8 @@ class Reviews(db.Model):
     __tablename__ = "Reviews"
     reviewsID=db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Float, nullable=False)
-    headline = db.Column(db.String(120))
-    commentary = db.Column(db.String(120))
+    headline = db.Column(db.String(10000))
+    commentary = db.Column(db.String(100000))
     dateReviewed = db.Column(db.String(60))
     userID= db.Column(db.Integer, db.ForeignKey('buyer.buyerID'))
     modelNum = db.Column(db.Text())
