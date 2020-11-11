@@ -25,49 +25,63 @@ def clean_data(csv):
             continue
     print(count)
 
-    buyer_info = {}
-    newcount = 0
-    for i in range(1000):
-        raw_review_info = data.iloc[i]['customer_reviews']
-        if raw_review_info == raw_review_info:
-            separate_reviews = raw_review_info.strip().split("|")
-            for rev in separate_reviews:
-                review_info = rev.split(" // ")
-                get_all_buyerinfo(i, review_info, buyer_info)
-                process_single_buyer(buyer_info[i], newcount)
-                newcount += 1
-        else:
-            continue
-    # after all the rows are processed, add the categories
+    get_all_reviewinfo(data)
     seed_category_info()
     print(newcount)
 
-def get_all_buyerinfo(i, review_info, buyer_info):
-    on = 0
-    if len(review_info) > 2: #some reviews for a product are incomplete, so we will skip them. for example, product in row 1704 has an
-        misc = review_info[3].split()
-        for idx in range(len(misc)):
-            if misc[idx]=='on':
-                on = idx
-        reviewer_name = ' '.join(misc[1:on])
-        buyer_info[i]=[reviewer_name]
-    return buyer_info
+def get_all_reviewinfo(data):
+    all_review_info = {}
+    count = 0
+    for i in range(len((data['customer_reviews']))):
+        raw_review_info = data.iloc[i]['customer_reviews']
+        modelNum = data.iloc[i]['uniq_id']
+        if raw_review_info == raw_review_info:
+            separate_reviews = raw_review_info.strip().split("|") #finding each separate review for each product, then decomposing each specific review
+            for rev in separate_reviews:
+                count += 1
+                review_info = rev.split(" // ")
+                if len(review_info) > 2: #some reviews for a product are incomplete, so we will skip them. for example, product in row 1704 has an
+                    headline = review_info[0].strip()
+                    #checking if commentary exists; if it doesn't just inserting nothing for commentary
+                    try:
+                        commentary = review_info[4].strip()
+                    except IndexError:
+                        commentary = ""
+                    date = review_info[2].strip()#getting date
+                    misc = review_info[3].split()
+                    user_rating = float(review_info[1].strip())
 
-def process_single_buyer(buyer_name, newcount):
+                    for idx in range(len(misc)):#finding where in the string the name is, it's right before on
+                        if misc[idx]=='on':
+                            on = idx
+                    reviewer_name = ' '.join(misc[1:on])
+
+                    process_single_buyer_and_review(reviewer_name, user_rating, headline, commentary, date, modelNum, count)
+
+                    if i not in all_review_info: #if a dict entry does not already exist for a product
+                        all_review_info[modelNum]=[[user_rating, headline, commentary, date, reviewer_name, modelNum]]
+                    else:
+                        all_review_info[modelNum].append([user_rating, headline, commentary, date, reviewer_name, modelNum])
+        else:
+            all_review_info[modelNum]=None #keys of dictioniaries are just the row number
+    return all_review_info
+
+
+def process_single_buyer_and_review(buyer_name, user_rating, headline, commentary, date, modelNum, count):
     print('---- new buyer ----')
-    newbuyer = buyer_name[0][:100]
-    print(newbuyer)
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
-    buyerEmail = newbuyer+"@gmail.com"[:100]
+    buyerEmail = buyer_name+"@gmail.com"
     existingUser = User.query.filter(User.email == buyerEmail).first()
     if existingUser is None:
-        user = User(newbuyer, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()), "Elementary School")
+        user = User(buyer_name, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()), "Elementary School")
         db.session.add(user)
         db.session.commit()
         # create buyer
-        buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", newbuyer, buyerEmail)
+        buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", buyer_name, buyerEmail)
+        review = Reviews(count, user_rating, headline, commentary, date, user.get_id(), modelNum)
         db.session.add(buyer)
+        db.session.add(review)
         db.session.commit()
     # to do: create cart (since every buyer needs to have a cart)
 
@@ -178,5 +192,11 @@ def seed_category_info():
             c = Category(category, count)
             db.session.add(c)
             db.session.commit()
+
+
+# all_ratings = print(len(get_all_ratings('amazon_co-ecommerce_sample.csv')))
+# all_numberofreviews = print(len(get_all_numberofreviews('amazon_co-ecommerce_sample.csv')))
+#get_all_reviewinfo = print(get_all_reviewinfo('amazon_co-ecommerce_sample.csv'))
+
 
 clean_data('amazon_co-ecommerce_sample.csv')
