@@ -6,14 +6,16 @@
 
 .user-choice-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 150px;
 }
 
 .user-choice {
     height: 50px;
-    background-color: #F6F5F5;
+    background-color: black;
     text-align: center;
-    width: 40%;
+    width: 100%;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -22,18 +24,28 @@
 .user-choice-text {
     text-decoration: none;
     margin: auto;
+    color: white;
 }
 
 .choose-user-type {
-    width: 100%;
+    width: 50%;
+    border: 1px solid grey;
+    padding: 50px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .choose-user-container {
     display: flex;
-    padding: 50px;
+    flex-direction: column;
+    text-align: center;
 }
 
 .back-to-login-text {
     text-align: center;
+}
+
+.back-to-login {
+    margin-top: 15px;
 }
 

@@ -5,13 +5,14 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/layout.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/choose-user-type.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/log-in.css') }}">
 </head>
 
 <div class="choose-user-container">
+    <div class="sign-up-title">
+        MAKE AN ACCOUNT
+    </div>
     <div class="choose-user-type">
-        <div class="choose-user-heading">
-            Sign up as a:
-        </div>
         <div class="user-choice-container">
             <div class="user-choice">
                 <a class="user-choice-text" href="/register/buyer">
@@ -26,9 +27,9 @@
             </div>
         </div>
     </div>
-</div>
-<div class="border-top pt-3 back-to-login-text">
-    <small class="text-muted">
+
+    <small class="text-muted back-to-login">
         <a class="ml-2" href="{{ url_for('login') }}">Back To Login</a>
     </small>
 </div>
+

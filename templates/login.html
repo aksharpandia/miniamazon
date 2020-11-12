@@ -19,31 +19,33 @@
             {% endif %}
         {% endwith %}
 
+        <div class="log-in-title">
+            MINI AMAZON STORE
+        </div>
+
         {% from "_formhelpers.html" import render_field %}
     
-        <form method="POST">
+        <form method="POST" class="log-in-form">
+            <div class="log-in-text">
+                LOG IN
+            </div>
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Log In</legend>
                 <dl>
                     {{ render_field(form.email) }}
                     {{ render_field(form.password) }}
                 </dl>
-                <div class="form-check">
-                    {{ form.remember(class="form-check-input") }}
-                    {{ form.remember.label(class="form-check-label") }}
-                </div>
             </fieldset>
 
             <div>
-                <input type="submit" value="Submit">
+                <input type="submit" class="log-in-submit" value="Submit">
             </div>
+
             <small class="text-muted ml-2">
                 <a href="/forgot-password">Forgot Password?</a>
             </small>
         </form>
-    </div>
-    <div class="border-top pt-3 register-text">
-        <small class="text-muted">
+
+        <small class="text-muted need-account-text">
             Need An Account? <a class="ml-2" href="{{ url_for('chooseRegistration') }}">Sign Up Now</a>
         </small>
     </div>
