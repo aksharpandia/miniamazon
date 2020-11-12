@@ -9,33 +9,30 @@ import locale
 locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' ) 
 from datetime import datetime
 
-# dropping existing databases, then reseeding - once we're ready to get rid of seed_test_db,py, can uncomment these lines
-db.drop_all()
-db.create_all()
-
+NUM_ROWS = 2000
 def clean_data(csv):
     data = pd.read_csv(csv)
     count = 0
-    for line in range(2000): # for now, just test with a really small amount of data
+    for line in range(NUM_ROWS):
         raw_sellers = data.iloc[line]['sellers']
         if raw_sellers == raw_sellers: # will only work with rows that have sellers
+            print("product ", count)
             process_seller_row(data, line)
             count += 1
         else:
             continue
-    #print(count)
 
     get_all_reviewinfo(data)
     seed_category_info()
-    #print(newcount)
 
 def get_all_reviewinfo(data):
     all_review_info = {}
     count = 0
-    for i in range(2000):
+    for i in range(NUM_ROWS):
+        print("review and buyer", i)
         raw_review_info = data.iloc[i]['customer_reviews']
         modelNum = data.iloc[i]['uniq_id']
-        if raw_review_info == raw_review_info:
+        if raw_review_info == raw_review_info and data.iloc[i]['sellers'] == data.iloc[i]['sellers']:
             separate_reviews = raw_review_info.strip().split("|") #finding each separate review for each product, then decomposing each specific review
             for rev in separate_reviews:
                 count += 1
@@ -56,7 +53,7 @@ def get_all_reviewinfo(data):
                             on = idx
                     reviewer_name = ' '.join(misc[1:on])
 
-                    process_single_buyer_and_review(reviewer_name, user_rating, headline, commentary, date, modelNum, count)
+                    process_single_buyer_and_review(reviewer_name, user_rating, headline, commentary, date, modelNum)
 
                     if i not in all_review_info: #if a dict entry does not already exist for a product
                         all_review_info[modelNum]=[[user_rating, headline, commentary, date, reviewer_name, modelNum]]
@@ -67,11 +64,11 @@ def get_all_reviewinfo(data):
     return all_review_info
 
 
-def process_single_buyer_and_review(buyer_name, user_rating, headline, commentary, date, modelNum, count):
+def process_single_buyer_and_review(buyer_name, user_rating, headline, commentary, date, modelNum):
     #print('---- new buyer ----')
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
-    buyerEmail = buyer_name+"@gmail.com"
+    buyerEmail = buyer_name.replace(" ","")+"@gmail.com"
     existingUser = User.query.filter(User.email == buyerEmail).first()
     if existingUser is None:
         user = User(buyer_name, buyerEmail, encryptedPassword, "buyer", datetime.date(datetime.now()), "Elementary School")
@@ -79,7 +76,7 @@ def process_single_buyer_and_review(buyer_name, user_rating, headline, commentar
         db.session.commit()
         # create buyer
         buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", buyer_name, buyerEmail)
-        review = Reviews(count, user_rating, headline, commentary, date, user.get_id(), modelNum)
+        review = Reviews(user_rating, headline, commentary, date, user.get_id(), modelNum)
         db.session.add(buyer)
         db.session.add(review)
         db.session.commit()
@@ -115,12 +112,11 @@ def process_single_seller(seller, data, line):
             seller_name = value[:100]
         if ('Seller_price' in attr):
             seller_price = value
-    #print(seller_name)
-    #print(seller_price)
+
     # create user because user needs to exist before seller
     encryptedPassword = bcrypt.generate_password_hash("password").decode('utf-8')
     # check if user exists
-    userEmail = seller_name+"@gmail.com"[:100]
+    userEmail = seller_name.replace(" ","")+"@gmail.com"[:100]
     user = User.query.filter(User.email == userEmail).first()
     if user is None:
         user = User(seller_name, userEmail, encryptedPassword, "seller", datetime.date(datetime.now()), "Elementary School")
@@ -131,17 +127,13 @@ def process_single_seller(seller, data, line):
         db.session.add(seller)
         db.session.commit()
 
-        # modelNum ('uniq_id'), userID ('seller_name_x'), productDescription ('product_description' + 'product_info'), 
-        # productName ('product_name'), productImage (PLACEHOLDER for now)
-        # stockLeft ('number_available_in_stock'), isRecommended (yes if 'average_review_rating' is >= 4.0)
         product_count = 0
         model_number = data.iloc[line]['uniq_id'].strip()
         raw_description = str(data.iloc[line]['product_description'])
         raw_info = str(data.iloc[line]['product_information'])
         product_description = raw_description.replace('Product Description', '')
         product_description = product_description[:100]
-        # print(product_description)
-        # product_description = unicodedata2.normalize("NFKD", product_des)
+
         product_name = data.iloc[line]['product_name'].strip()
         product_name = product_name[:100]
         category = data.iloc[line]['amazon_category_and_sub_category']
@@ -155,8 +147,6 @@ def process_single_seller(seller, data, line):
             category = 'Hobbies > Model Trains & Railway Sets > Rail Vehicles > Trains' # default category
 
         stock = (str(data.iloc[line]['number_available_in_stock'])).split('\xa0')
-        # if (stock[0] != stock[0]):
-        # if (pd.isna(stock[0])): 
         if (stock[0] == 'nan'): # if nan (it's a string), set stock_left=0
             stock_left = 0
         else:
@@ -198,11 +188,6 @@ def seed_category_info():
             c = Category(category, count)
             db.session.add(c)
             db.session.commit()
-
-
-# all_ratings = print(len(get_all_ratings('amazon_co-ecommerce_sample.csv')))
-# all_numberofreviews = print(len(get_all_numberofreviews('amazon_co-ecommerce_sample.csv')))
-#get_all_reviewinfo = print(get_all_reviewinfo('amazon_co-ecommerce_sample.csv'))
 
 
 clean_data('amazon_co-ecommerce_sample.csv')

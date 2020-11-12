@@ -21,7 +21,7 @@ class AddProductForm(FlaskForm):
 class AddBuyerForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired()])
-    password = StringField('Password', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
     balance = FloatField('Balance', validators=[InputRequired()])
     shippingAddress = StringField('Shipping Address', validators=[InputRequired()])
     billingAddress = StringField('Billing Address', validators=[InputRequired()])
@@ -43,7 +43,7 @@ class AddBuyerForm(FlaskForm):
 class AddSellerForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired()])
-    password = StringField('Password', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
     securityQuestionAnswer = StringField('Name of Elementary School (Security Question)', validators=[InputRequired()])
     submit = SubmitField('Finish Account Setup')
 
@@ -73,13 +73,12 @@ class AddOrderForm(FlaskForm):
     submit = SubmitField('Add Order')
 
 class AddReviewsForm(FlaskForm):
-    reviewsID = IntegerField('ID of Review', validators=[InputRequired()])
     rating = IntegerField('Rating', validators=[InputRequired()])    
     headline = StringField('Headline for your review', validators=[InputRequired()])  
     commentary = StringField('Your feedback', validators=[InputRequired()])  
     dateReviewed = StringField('Date Today', validators=[InputRequired()])
     userID = IntegerField('Your User ID', validators=[InputRequired()])
-    modelNum = IntegerField('Model Number', validators=[InputRequired()])
+    modelNum = StringField('Model Number', validators=[InputRequired()])
     submit = SubmitField('Submit Review')
 
 class LogInForm(FlaskForm):

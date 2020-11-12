@@ -14,6 +14,7 @@
                 {{ render_field(form.name) }}
                 {{ render_field(form.email) }}
                 {{ render_field(form.password) }}
+                {{ render_field(form.securityQuestionAnswer) }}
 
                 {% if user_type == 'buyer' %}
                     {{ render_field(form.balance) }}
@@ -22,8 +23,8 @@
                     {{ render_field(form.photo )}}
                 {% endif %}
             </dl>
-            <p><input type="submit" value="Submit">
-        </p></form>
+            <input type="submit" value="Submit">
+        </form>
     </div>
     <div class="border-top pt-3">
         <small class="text-muted">

@@ -276,7 +276,7 @@ def createOrder(cart_id):
     if request.method == 'POST':
         orderID = randint(0,999999)
         total_price = find_price_of_cart(cart_id)
-        newOrder = Order(orderID, current_user.id, total_price, 'express', "10-01-2020")
+        newOrder = Order(orderID, current_user.id, total_price, 'express', datetime.date(datetime.now()))
         db.session.add(newOrder)
         db.session.commit()
         itemsincart = [i.itemID for i in db.session.query(IsPlacedInCart).\
@@ -448,7 +448,7 @@ def reviews():
 def addReviews():
     form = AddReviewsForm()
     if request.method=='POST': # need to validate form
-        reviews = Reviews(form.reviewsID.data, form.rating.data, form.headline.data, form.commentary.data, form.dateReviewed.data, form.userID.data, form.modelNum.data)
+        reviews = Reviews(form.rating.data, form.headline.data, form.commentary.data, form.dateReviewed.data, form.userID.data, form.modelNum.data)
         exists = bool(db.session.query(Product).filter_by(modelNum=form.modelNum.data).first()) #checking if model num exists in product table
         if exists: 
             save_reviews_add(reviews, form, new=True)  
@@ -465,7 +465,6 @@ def save_reviews_add(reviews, form, new=False):
     # Get data from form and assign it to the correct attributes of the SQLAlchemy table object
 
     # data from the user input
-    reviews.reviewsID = form.reviewsID.data
     reviews.rating = form.rating.data
     reviews.headline = form.headline.data
     reviews.commentary = form.commentary.data
