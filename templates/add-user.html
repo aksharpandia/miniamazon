@@ -1,14 +1,21 @@
 
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/user.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Avenir" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/layout.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/add-user-form.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='stylesheets/log-in.css') }}">
 </head>
 
-{% extends "layout.html" %}
-{% block content %}
-    <div>
+    <div class="add-user-form-page">
+        <div class="add-user-title">
+            CREATE YOUR ACCOUNT
+        </div>
         {% from "_formhelpers.html" import render_field %}
 
-        <form method="POST">
+        <form method="POST" class="add-user-form">
             {{ form.hidden_tag() }}
             <dl>
                 {{ render_field(form.name) }}
@@ -23,12 +30,12 @@
                     {{ render_field(form.photo )}}
                 {% endif %}
             </dl>
-            <input type="submit" value="Submit">
+            <input class="add-user-submit" type="submit" value="Submit">
         </form>
-    </div>
-    <div class="border-top pt-3">
+
         <small class="text-muted">
             Changed your mind? <a class="ml-2" href="{{ url_for('chooseRegistration') }}">Go Back to Registration Choice</a>
         </small>
     </div>
-{% endblock content %}
+   
+

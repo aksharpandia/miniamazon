@@ -1,7 +1,43 @@
 .log-in-container {
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .register-text {
     text-align: center;
+}
+
+.log-in-form {
+    margin: auto;
+    border: 1px solid grey;
+    width: 50%;
+    padding: 10px;
+}
+
+.log-in-title, .sign-up-title {
+    font-weight: bold;
+    font-size: 40px;
+    margin-top: 80px;
+    margin-bottom: 20px;
+}
+
+.log-in-text {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.log-in-submit, .add-user-submit {
+    border: none;
+    background: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    width: 50%;
+    margin-bottom: 10px;
+}
+
+.need-account-text {
+    margin-top: 15px;
 }
