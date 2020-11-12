@@ -84,20 +84,6 @@ class Category(db.Model):
     def __repr__(self):
         return f"Category('{self.category}', '{self.numberOfItems}')"
 
-# class BelongsToCategory(db.Model):
-#     # relationship set between a product and category
-#     __tablename__ = "belongstocategory"
-
-#     modelNum = db.Column(db.Text(), primary_key=True)
-#     categoryName = db.Column(db.String(120))
-
-#     def __init__(self, modelNum, categoryName):
-#         self.modelNum = modelNum 
-#         self.categoryName = categoryName 
-
-#     def __repr__(self):
-#         return f"BelongsToCategory('{self.modelNum}', '{self.categoryName}')"
-
 class Cart(db.Model):
     __tablename__ = "cart"
 
@@ -168,8 +154,7 @@ class Reviews(db.Model):
     dateReviewed = db.Column(db.String(60))
     userID= db.Column(db.Integer, db.ForeignKey('user.id'))
     modelNum = db.Column(db.Text())
-    def __init__(self, reviewsID, rating, headline, commentary, dateReviewed, userID, modelNum):
-        self.reviewsID = reviewsID
+    def __init__(self, rating, headline, commentary, dateReviewed, userID, modelNum):
         self.rating = rating   
         self.headline = headline
         self.commentary = commentary 
