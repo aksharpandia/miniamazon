@@ -21,6 +21,7 @@
 .product-info {
     margin-left: 20em;
     margin-top: 5em;
+    margin-right: 20em;
 }
 
 .product-info-header {
@@ -101,4 +102,9 @@
 
 .modify-product-section {
     display: inline-block;
+}
+
+.seller-table-title, .review-table-title {
+    font-weight: bold;
+    font-size: 20px;
 }

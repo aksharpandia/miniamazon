@@ -3,28 +3,23 @@
 }
 
 .nav-bar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     background-color: #333;
 }
 
-.nav-element {
-    float: left;
+.nav-element, .search-element {
+    display: flex;
+    flex-direction: row;
 }
 
 .nav-element a {
-    display: block;
+    margin: auto;
     color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-}
-
-li#logo {
-    width: 100px;
-    height: auto;
 }
 
 #amazon-logo {
@@ -32,6 +27,7 @@ li#logo {
     margin-top: 5px;
     width: 100px;
     height: auto;
+    cursor: pointer;
 }
 
 .errors {
@@ -60,3 +56,83 @@ th, td {
     margin-bottom: 0;
 }
 
+.search-bar {
+    width: 500px;
+}
+
+.search-container {
+    margin: auto;
+}
+
+.fa-search {
+    color: white;
+    cursor: pointer;
+}
+
+.submit-search {
+    background: none;
+    border: none;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    font-size: 16px;  
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: fixed;
+    background-color: black;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: rgb(150, 145, 145);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.nav-bar .nav-element:hover, .dropdown:hover .dropbtn {
+    background-color: rgb(66, 65, 65);
+}
+
+.fa-shopping-cart {
+    color: white;
+    margin:auto;
+    cursor: pointer;
+}
+
+.shopping-cart {
+    display: flex;
+    height: 100%;
+    margin-left: 10px;
+    padding-right: 15px;
+}
+
+.dropdown-container {
+    display: inline-block;
+}
