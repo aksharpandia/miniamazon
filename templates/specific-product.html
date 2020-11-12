@@ -23,7 +23,7 @@
 
     <div>
         <!-- still need to make "add to cart" button functional -->
-        <div class="product-description">List of sellers selling this product:</div>
+        <div class="seller-table-title">Sellers selling this product</div>
         <table>
             <thead>
                 <th>Name - </th>
@@ -37,14 +37,17 @@
                     <td> {{seller.name}} </td>
                     <td> {{seller.stockLeft}}</td>
                     <td class="seller-product-price"> $ {{seller.price}}</td>
+                    
+                    {% if current_user.type == 'buyer' %}
                     <td> <a href="">Add to Cart</a> </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <br><br>
-    <div class="reviews-table-title">Reviews for the {{curr_product.productName}}</div>
+    <div class="review-table-title">Reviews for the {{curr_product.productName}}</div>
     <table>
         <thead>
             <th>Headline</th>

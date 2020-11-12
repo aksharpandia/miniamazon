@@ -19,7 +19,14 @@
                     <div class="seller-product-desc">{{result.productDescription}}</div>
                     <div class="seller-product-price">$ {{result.price}}</div>
                     <a href="/product/{{result.modelNum}}">View Product</a><br>
-                    <a href="">Add to Cart</a>
+
+            
+                    <!-- {% if current_user.type == 'buyer' %}
+                    <button type="submit" class="add-to-cart-button" onclick="window.location = '/updatecart/{{result.modelNum}}/{{current_user.id}}';">Add to Cart </button>
+                    {% endif %} -->
+                    {% if result.stockLeft < 5 %}
+                    <div class="quantity-left"> Only {{result.stockLeft}} left!</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
