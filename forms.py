@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, FileField, SubmitField, BooleanField, FloatField, PasswordField
-from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationError, EqualTo
+from wtforms import StringField, IntegerField, FileField, SubmitField, BooleanField, FloatField, PasswordField, DecimalField
+from wtforms.validators import DataRequired, InputRequired, Regexp, ValidationError, EqualTo, NumberRange
 from models import *
+
 
 class SearchForm(FlaskForm):
     search = StringField('search', [DataRequired()])
@@ -88,8 +89,8 @@ class LogInForm(FlaskForm):
     submit = SubmitField('Login')
 
 class AddBalanceForm(FlaskForm):
-    newbalance = FloatField('Add To Balance By', validators=[InputRequired()])
-    submit = SubmitField('Add Balance')
+    newbalance = FloatField('Balance to add to this account:', validators=[InputRequired()])
+    submit = SubmitField('Proceed')
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired()])
