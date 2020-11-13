@@ -124,17 +124,20 @@ def buyer_ID():
         curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first(), orders = Order.query.filter(Order.buyerID==current_user.id).all(), form=form
     )
 
-
-
 @app.route('/buyer/addBalance', methods=['GET', 'POST'])
 def addBalance():
     form = AddBalanceForm()
     curr_buyer = Buyer.query.filter(Buyer.buyerID == current_user.id).first()
-    if request.method=='POST': # need to validate form
-        balance = curr_buyer.balance + form.newbalance.data
-        save_balance_add(curr_buyer, balance, form, new=True)
-        flash(f'You added {form.newbalance.data} to the balance', 'success')
-        return redirect('/buyer') # redirect to buyer profile page so they can see the updated table
+    if request.method == 'POST': # need to validate form
+        mynewbalance = form.newbalance.data
+        if (isinstance(mynewbalance, float) and mynewbalance>0):
+            balance = curr_buyer.balance + mynewbalance
+            save_balance_add(curr_buyer, balance, form, new=True)
+            flash(f'You added {form.newbalance.data} to the balance', 'success')
+            return redirect('/buyer') # redirect to buyer profile page so they can see the updated table
+        else:
+            flash("Invalid Amount: Try Again!")
+            return redirect('/buyer/addBalance')
     return render_template('add-balance.html', title='Add Balance', form=form)
     
 
