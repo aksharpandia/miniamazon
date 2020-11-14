@@ -323,9 +323,9 @@ def change_buyer_balance(total_price, cart_id):
     db.session.commit()
 
 def change_product_quantity(entry):
-    modelNum = entry[1]
-    userID = entry[2]
-    quantity = entry[3]
+    modelNum = entry[2]
+    userID = entry[3]
+    quantity = entry[4]
     product_to_edit = db.session.query(Product).filter(Product.modelNum == modelNum,
         Product.userID == userID).first()
     product_to_edit.stockLeft = product_to_edit.stockLeft - quantity
@@ -393,7 +393,7 @@ def cart_id(cart_cartID):
 
 def find_products_in_cart(cartID):
     # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
-    return db.session.query(db.func.min(Product.productName), Item.modelNum,
+    return db.session.query(db.func.min(Product.productImage), db.func.min(Product.productName), Item.modelNum,
         Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
