@@ -67,6 +67,8 @@ def searchResults():
     search_string = request.form['search']
     if search_string != '':
         results = Product.query.filter(Product.productName.contains(search_string)) # this is case sensitive
+        if results.first()==None:
+            flash('No results found!')
     if not results:
         flash('No results found!')
         return redirect('/')
