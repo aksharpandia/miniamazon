@@ -24,8 +24,11 @@
                     {% if current_user.type == 'buyer' %}
                     <button type="submit" class="add-to-cart-button" form="updatecart/{{rec.modelNum}}/{{rec.userID}}">Add to Cart </button>
                     {% endif %}
-                    {% if rec.stockLeft < 5 %}
+                    {% if rec.stockLeft < 5 and rec.stockLeft != 0 %}
                     <div class="quantity-left"> Only {{rec.stockLeft}} left!</div>
+                    {% endif %}
+                    {% if rec.stockLeft == 0 %}
+                    <div class="quantity-left"> Out of stock!</div>
                     {% endif %}
                 </div>
             </div>

@@ -166,13 +166,14 @@ def product_id(model_num):
         all_sellers=
             Product.query\
             .join(User, User.id == Product.userID).filter(Product.modelNum == model_num)
-            .with_entities(User.name, Product.stockLeft, Product.price),
+            .with_entities(User.name, Product.stockLeft, Product.price, Product.modelNum, Product.userID),
         # curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
         # categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
         ratings=Reviews.query.filter(Reviews.modelNum == model_num),
         avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0'),
         form=form,
-        reviews=Reviews.query.filter(Reviews.modelNum == model_num)
+        reviews=Reviews.query.filter(Reviews.modelNum == model_num),
+        mycart = Cart.query.filter(Cart.buyerID == current_user.id).first()
         )
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
