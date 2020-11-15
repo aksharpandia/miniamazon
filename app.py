@@ -467,14 +467,14 @@ def reviews():
 def addReviews(modelNum):
     form = AddReviewsForm()
     if request.method=='POST': # need to validate form
-        reviews = Reviews(form.rating.data, form.headline.data, form.commentary.data, form.dateReviewed.data, form.userID.data, modelNum)
+        reviews = Reviews(form.rating.data, form.headline.data, form.commentary.data, datetime.date(datetime.now()), current_user.id, modelNum)
         exists = bool(db.session.query(Product).filter_by(modelNum=modelNum).first()) #checking if model num exists in product table
         if exists: 
             save_reviews_add(reviews, form, modelNum, new=True)  
         else:
             return "Model number does not exist"      
         flash(f'You successfully created a review with rating {form.rating.data}! Thanks for your feedback.', 'success')
-        return redirect(url_for('main')) 
+        return redirect('/product/'+modelNum)
     return render_template('add-reviews.html', title='Create a review for your product', form=form)
 
 def save_reviews_add(reviews, form, modelNum, new=False):
@@ -487,8 +487,8 @@ def save_reviews_add(reviews, form, modelNum, new=False):
     reviews.rating = form.rating.data
     reviews.headline = form.headline.data
     reviews.commentary = form.commentary.data
-    reviews.dateReviewed = form.dateReviewed.data 
-    reviews.userID = form.userID.data
+    reviews.dateReviewed = datetime.date(datetime.now())
+    reviews.userID = current_user.id
     reviews.modelNum = modelNum
     if new:
         db.session.add(reviews)
