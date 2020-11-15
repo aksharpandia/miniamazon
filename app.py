@@ -126,7 +126,7 @@ def buyer_ID():
         curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first(), orders = Order.query.filter(Order.buyerID==current_user.id).all(), form=form
     )
 
-@app.route('/buyer/', methods=['GET', 'POST'])
+@app.route('/buyer/addBalance', methods=['GET', 'POST'])
 def addBalance():
     form = AddBalanceForm()
     curr_buyer = Buyer.query.filter(Buyer.buyerID == current_user.id).first()
