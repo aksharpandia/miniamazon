@@ -474,7 +474,7 @@ def addReviews(modelNum):
         else:
             return "Model number does not exist"      
         flash(f'You successfully created a review with rating {form.rating.data}! Thanks for your feedback.', 'success')
-        return redirect(url_for('reviews')) # redirect to product page so they can see the updated table
+        return redirect(url_for('main')) 
     return render_template('add-reviews.html', title='Create a review for your product', form=form)
 
 def save_reviews_add(reviews, form, modelNum, new=False):
