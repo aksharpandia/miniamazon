@@ -9,6 +9,9 @@ import locale
 locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' ) 
 from datetime import datetime
 
+db.drop_all()
+db.create_all()
+
 NUM_ROWS = 2000
 def clean_data(csv):
     data = pd.read_csv(csv)
@@ -75,7 +78,10 @@ def process_single_buyer_and_review(buyer_name, user_rating, headline, commentar
         db.session.add(user)
         db.session.commit()
         # create buyer
+        id = user.get_id()
         buyer = Buyer(user.get_id(), 150.00, "300 Research Dr, Durham, NC 27710", "300 Research Dr, Durham, NC 27710", "/static/images/blankprofilepic.png", buyer_name, buyerEmail)
+        existingSeller = Seller.query.filter(Seller.sellerID == id).first()
+        # if existingSeller:
         review = Reviews(user_rating, headline, commentary, date, user.get_id(), modelNum)
         db.session.add(buyer)
         db.session.add(review)

@@ -13,9 +13,19 @@
     margin-top: 5px;
 }
 
+.product-review {
+    font-size: 16px;
+    color: #000000;
+    width: 50%;
+    text-align: left;
+    margin-left: 25%;
+    margin-top: 5px;
+}
+
 .product-category {
     font-size: 20px;
     color: grey;
+    margin-top: 20em;
 }
 
 .product-info {

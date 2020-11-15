@@ -23,6 +23,10 @@
                 <td>{{userID}}</td>
                 <td>{{quantity}}</td>
                 <td>{{price}}</td>
+                <td><a href="/add-reviews/{{modelNum}}">Add your review</a><br>
+                    <form action="{{url_for('addReviews', modelNum = modelNum)}}"
+                    method="POST" id="add-reviews/{{modelNum}}">
+                    </form></td>
             </tr>
             {% endfor %}
         </tbody>
