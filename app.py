@@ -171,13 +171,14 @@ def product_id(model_num):
         all_sellers=
             Product.query\
             .join(User, User.id == Product.userID).filter(Product.modelNum == model_num)
-            .with_entities(User.name, Product.stockLeft, Product.price),
+            .with_entities(User.name, Product.stockLeft, Product.price, Product.modelNum, Product.userID),
         # curr_category=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num).one(),
         # categories=BelongsToCategory.query.filter(BelongsToCategory.modelNum == model_num),
         ratings=Reviews.query.filter(Reviews.modelNum == model_num),
         avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0'),
         form=form,
-        reviews=Reviews.query.filter(Reviews.modelNum == model_num)
+        reviews=Reviews.query.filter(Reviews.modelNum == model_num),
+        mycart = Cart.query.filter(Cart.buyerID == current_user.id).first()
         )
 
 @app.route('/add-product/<seller_id>', methods=['GET', 'POST'])
@@ -279,8 +280,13 @@ def updateCart(cart_id, model_num, user_id):
 @app.route('/createorder/<cart_id>', methods=['GET', 'POST'])
 def createOrder(cart_id):
     if request.method == 'POST':
-        orderID = randint(0,999999)
         total_price = find_price_of_cart(cart_id)
+        validBalance, currentBalance = checkBalance(total_price, cart_id)
+        if validBalance is False:
+            flash(
+                f'Your balance of ${currentBalance} is insufficient. Please navigate to Buyer Profile to add more balance.', 'failure')
+            return redirect('/cart/' + cart_id)
+        orderID = randint(0,999999)
         newOrder = Order(orderID, current_user.id, total_price, 'express', datetime.date(datetime.now()))
         db.session.add(newOrder)
         db.session.commit()
@@ -301,6 +307,14 @@ def createOrder(cart_id):
         flash(
             f'You successfully created Order {newOrder.orderID}!', 'success')
         return redirect('/order')
+
+def checkBalance(total_price, cart_id):
+    buyer_to_check = db.session.query(Buyer).\
+        join(Cart, Cart.buyerID==Buyer.buyerID).filter(Cart.cartID == cart_id).first()
+    balance = buyer_to_check.balance
+    if balance < total_price:
+        return False, balance
+    return True, balance
 
 def add_item_to_order(orderID, itemID):
     newItemsInOrder = ItemsInOrder(orderID, itemID)
@@ -327,9 +341,9 @@ def change_buyer_balance(total_price, cart_id):
     db.session.commit()
 
 def change_product_quantity(entry):
-    modelNum = entry[1]
-    userID = entry[2]
-    quantity = entry[3]
+    modelNum = entry[2]
+    userID = entry[3]
+    quantity = entry[4]
     product_to_edit = db.session.query(Product).filter(Product.modelNum == modelNum,
         Product.userID == userID).first()
     product_to_edit.stockLeft = product_to_edit.stockLeft - quantity
@@ -397,7 +411,7 @@ def cart_id(cart_cartID):
 
 def find_products_in_cart(cartID):
     # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
-    return db.session.query(db.func.min(Product.productName), Item.modelNum,
+    return db.session.query(db.func.min(Product.productImage), db.func.min(Product.productName), Item.modelNum,
         Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
