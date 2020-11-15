@@ -275,8 +275,13 @@ def updateCart(cart_id, model_num, user_id):
 @app.route('/createorder/<cart_id>', methods=['GET', 'POST'])
 def createOrder(cart_id):
     if request.method == 'POST':
-        orderID = randint(0,999999)
         total_price = find_price_of_cart(cart_id)
+        validBalance, currentBalance = checkBalance(total_price, cart_id)
+        if validBalance is False:
+            flash(
+                f'Your balance of ${currentBalance} is insufficient. Please navigate to Buyer Profile to add more balance.', 'failure')
+            return redirect('/cart/' + cart_id)
+        orderID = randint(0,999999)
         newOrder = Order(orderID, current_user.id, total_price, 'express', datetime.date(datetime.now()))
         db.session.add(newOrder)
         db.session.commit()
@@ -297,6 +302,14 @@ def createOrder(cart_id):
         flash(
             f'You successfully created Order {newOrder.orderID}!', 'success')
         return redirect('/order')
+
+def checkBalance(total_price, cart_id):
+    buyer_to_check = db.session.query(Buyer).\
+        join(Cart, Cart.buyerID==Buyer.buyerID).filter(Cart.cartID == cart_id).first()
+    balance = buyer_to_check.balance
+    if balance < total_price:
+        return False, balance
+    return True, balance
 
 def add_item_to_order(orderID, itemID):
     newItemsInOrder = ItemsInOrder(orderID, itemID)
