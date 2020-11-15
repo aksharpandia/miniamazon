@@ -79,7 +79,7 @@ class AddReviewsForm(FlaskForm):
     commentary = StringField('Your feedback', validators=[InputRequired()])  
     dateReviewed = StringField('Date Today', validators=[InputRequired()])
     userID = IntegerField('Your User ID', validators=[InputRequired()])
-    modelNum = StringField('Model Number', validators=[InputRequired()])
+    #modelNum = StringField('Model Number', validators=[InputRequired()])
     submit = SubmitField('Submit Review')
 
 class LogInForm(FlaskForm):

@@ -50,8 +50,13 @@
             </tbody>
         </table>
     </div>
-    <br><br>
-    <div class="review-table-title">Reviews for the {{curr_product.productName}}</div>
+
+    <div class="product-review">
+    <a href="/add-reviews/{{curr_product.modelNum}}">Add your review for the {{curr_product.productName}}</a><br>
+                <form action="{{url_for('addReviews', modelNum = curr_product.modelNum)}}"
+                method="POST" id="add-reviews/{{curr_product.modelNum}}">
+                </form>
+            </div>
     <table>
         <thead>
             <th>Headline</th>
