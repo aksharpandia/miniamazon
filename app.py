@@ -126,7 +126,7 @@ def buyer_ID():
         curr_buyer=Buyer.query.filter(Buyer.buyerID == current_user.id).first(), orders = Order.query.filter(Order.buyerID==current_user.id).all(), form=form
     )
 
-@app.route('/buyer/addBalance', methods=['GET', 'POST'])
+@app.route('/buyer/', methods=['GET', 'POST'])
 def addBalance():
     form = AddBalanceForm()
     curr_buyer = Buyer.query.filter(Buyer.buyerID == current_user.id).first()
@@ -411,12 +411,12 @@ def cart_id(cart_cartID):
 
 def find_products_in_cart(cartID):
     # Product Name, Model Number, Sold By (user id), Quantity, Price per unit
-    return db.session.query(db.func.min(Product.productImage), db.func.min(Product.productName), Item.modelNum,
-        Item.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
+    return db.session.query(db.func.min(Product.productImage), db.func.min(Product.productName), db.func.min(Item.modelNum),
+        Product.userID, db.func.count(IsPlacedInCart.itemID), db.func.min(Product.price)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         join(Product, Item.modelNum == Product.modelNum and Item.userID == Proudct.userID).\
         filter(IsPlacedInCart.cartID==cartID).\
-        group_by(Item.modelNum, Item.userID).all()
+        group_by(Product.modelNum, Product.userID).all()
 
 def find_price_of_cart(cartID):
     total_price = db.session.query(db.func.sum(Product.price)).\
