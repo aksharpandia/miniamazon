@@ -420,7 +420,7 @@ def find_products_in_cart(cartID):
 
 def find_price_of_cart(cartID):
     total_price = db.session.query(db.func.sum(Product.price)).\
-        join(Item, (Item.modelNum == Product.modelNum) & (Item.userID == Proudct.userID)).\
+        join(Item, (Item.modelNum == Product.modelNum) & (Item.userID == Product.userID)).\
         join(IsPlacedInCart, IsPlacedInCart.itemID == Item.itemID).\
         filter(IsPlacedInCart.cartID==cartID).all()
     total_price = total_price[0][0] #some weird SQL thing
@@ -451,7 +451,7 @@ def find_products_in_order(orderID):
     return db.session.query(db.func.min(Product.productName), Item.modelNum,
         Item.userID, db.func.count(ItemsInOrder.itemID), db.func.min(Product.price)).\
         join(ItemsInOrder, ItemsInOrder.itemID == Item.itemID).\
-        join(Product, (Item.modelNum == Product.modelNum) & (Item.userID == Proudct.userID)).\
+        join(Product, (Item.modelNum == Product.modelNum) & (Item.userID == Product.userID)).\
         filter(ItemsInOrder.orderID == orderID).\
         group_by(Item.modelNum, Item.userID).all()
 
