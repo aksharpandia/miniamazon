@@ -177,7 +177,7 @@ def product_id(model_num):
         ratings=Reviews.query.filter(Reviews.modelNum == model_num),
         avg_rating=str(Reviews.query.filter(Reviews.modelNum == model_num).with_entities(func.avg(Reviews.rating)).one()[0]).rstrip('0'),
         form=form,
-        reviews=Reviews.query.filter(Reviews.modelNum == model_num),
+        reviews=Reviews.query.filter(Reviews.modelNum == model_num).order_by(Reviews.dateReviewed.desc()),
         mycart = Cart.query.filter(Cart.buyerID == current_user.id).first()
         )
 
@@ -468,11 +468,23 @@ def addReviews(modelNum):
     form = AddReviewsForm()
     if request.method=='POST': # need to validate form
         reviews = Reviews(form.rating.data, form.headline.data, form.commentary.data, datetime.date(datetime.now()), current_user.id, modelNum)
+
+        #checking if rating is invalid. if so, redirecting back to reviews page
+        rating = form.rating.data
+        if rating < 1 or rating > 5:
+            flash(f'You entered an invalid rating of {form.rating.data}. Please rate the item any number from 1-5.', 'danger')
+            return redirect('/add-reviews/'+modelNum)
+        
         exists = bool(db.session.query(Product).filter_by(modelNum=modelNum).first()) #checking if model num exists in product table
         if exists: 
             save_reviews_add(reviews, form, modelNum, new=True)  
+
+        #checking if review model num exists
         else:
-            return "Model number does not exist"      
+            flash(f'This is not a valid model number/product. Please access the reviews page through the page of a specific product.', 'danger')
+            return redirect(url_for('main'))
+
+        #success message
         flash(f'You successfully created a review with rating {form.rating.data}! Thanks for your feedback.', 'success')
         return redirect('/product/'+modelNum)
     return render_template('add-reviews.html', title='Create a review for your product', form=form)
