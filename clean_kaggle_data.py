@@ -12,7 +12,7 @@ from datetime import datetime
 db.drop_all()
 db.create_all()
 
-NUM_ROWS = 500
+NUM_ROWS = 485
 def clean_data(csv):
     data = pd.read_csv(csv)
     count = 0
